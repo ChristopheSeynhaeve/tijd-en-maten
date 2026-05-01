@@ -1,0 +1,677 @@
+/*v2.0*/
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+:root{
+    --ink: #0b1320;
+    --ink-muted: #4b5563;
+    --panel: rgba(255, 255, 255, 0.86);
+    --panel-border: rgba(15, 23, 42, 0.08);
+    --accent-cool: #0ea5e9;
+    --accent-warm: #f97316;
+}
+body.clock-page{
+    font-family: "Space Grotesk", sans-serif;
+    color: var(--ink);
+    background:
+        radial-gradient(1200px 600px at 8% -10%, #e8f3ff 0%, rgba(232, 243, 255, 0) 60%),
+        radial-gradient(800px 400px at 92% 8%, #fff3e0 0%, rgba(255, 243, 224, 0) 60%),
+        linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+.clock-layout{
+    min-height: 100vh;
+    padding: 1.5rem 0 2rem;
+    display: flex;
+    flex-direction: column;
+}
+.clock-topbar{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0 2rem 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+.clock-page-topbar{
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+.clock-page-title{
+    font-size: 1.15rem;
+    font-weight: 600;
+}
+.clock-page-actions{
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+.clock-filter-btn{
+    border-radius: 999px;
+    padding: 0.6rem 1.4rem;
+    box-shadow: 0 14px 28px rgba(15, 23, 42, 0.18);
+}
+.clock-lang-toggle{
+    border-radius: 999px;
+    padding: 0.6rem 1.1rem;
+}
+.clock-compare-topbar{
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+.clock-compare-title{
+    font-size: 1.15rem;
+    font-weight: 600;
+}
+.clock-compare-container{
+    max-width: 1200px;
+}
+.clock-compare-controls{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+    justify-content: center;
+    margin: 0.5rem 0 1.25rem;
+}
+.clock-compare-filters,
+.clock-filters{
+    margin: 0.5rem 0 1.25rem;
+    padding: 0.75rem 1rem;
+    border-radius: 18px;
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+}
+.clock-compare-filters-title{
+    font-weight: 600;
+}
+.clock-compare-filters .form-check,
+.clock-filters .form-check{
+    margin-bottom: 0;
+}
+.clock-compare-filters .form-label,
+.clock-filters .form-label{
+    margin-bottom: 0.25rem;
+}
+.clock-compare-filters .form-control,
+.clock-filters .form-control{
+    min-width: 140px;
+}
+.clock-compare-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+    align-items: start;
+}
+.clock-compare-card{
+    background: var(--panel);
+    border-radius: 20px;
+    padding: 1rem 1rem 1.25rem;
+    border: 1px solid var(--panel-border);
+    box-shadow: 0 16px 40px rgba(15, 23, 42, 0.1);
+}
+.clock-compare-card-title{
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+.clock-compare-analog{
+    display: flex;
+    justify-content: center;
+}
+.clock-compare-digital{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.clock-shell.clock-shell-compare{
+    width: min(52vh, 100%, 380px);
+    height: auto;
+    aspect-ratio: 1;
+    padding: 0.9rem;
+}
+.clock-compare-result{
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: center;
+}
+.clock-compare-result-panel{
+    text-align: center;
+}
+.clock-compare-output{
+    margin-top: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    box-shadow: 0 12px 26px rgba(15, 23, 42, 0.12);
+}
+.clock-compare-practice{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+}
+.clock-compare-inputs{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+}
+.clock-compare-input{
+    min-width: 90px;
+}
+.clock-compare-feedback{
+    min-height: 1.25rem;
+    font-weight: 600;
+}
+.clock-main{
+    flex: 1;
+    margin-left: 0;
+    margin-right: 0;
+}
+.clock-refresh-bar{
+    display: flex;
+    justify-content: center;
+    margin: 0.5rem 0 0.75rem;
+}
+.clock-overlay-actions{
+    position: fixed;
+    left: 50%;
+    bottom: 1.25rem;
+    transform: translateX(-50%);
+    display: none;
+    gap: 0.75rem;
+    padding: 0.6rem 1rem;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.12);
+    backdrop-filter: blur(8px);
+    z-index: 15;
+}
+.clock-controls{
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 16px;
+    padding: 0.85rem 1rem;
+    box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+    margin-bottom: 1.75rem;
+}
+.clock-stage{
+    height: 70vh;
+    min-height: 320px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem 1rem;
+}
+.clock-shell{
+    --clock-size: min(100%, calc(70vh - 3rem), 640px);
+    width: var(--clock-size);
+    height: var(--clock-size);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    padding: 1.5rem;
+    background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.7));
+    box-shadow: 0 30px 60px rgba(15, 23, 42, 0.2), inset 0 0 0 1px var(--panel-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.clock{
+    height: 100%;
+    width: 100%;
+    border-radius: 50%;
+    position: relative;
+    --tick-offset: 0.5deg;
+    --tick-inner: 56%;
+    --tick-outer: 66%;
+    border: none;
+    outline: 6px solid #111;
+    outline-offset: 0;
+    background:
+        radial-gradient(circle at 30% 30%, #ffffff 0%, #f8fafc 45%, #e2e8f0 100%);
+    box-shadow: inset 0 0 30px rgba(15, 23, 42, 0.1);
+    overflow: hidden;
+}
+.clock::before{
+    content: "";
+    position: absolute;
+    inset: 6%;
+    border-radius: 50%;
+    background:
+        repeating-conic-gradient(
+            from calc(-90deg - var(--tick-offset)),
+            rgba(15, 23, 42, 0.5) 0deg 0.7deg,
+            rgba(15, 23, 42, 0.2) 0.7deg 0.9deg,
+            transparent 0.9deg 6deg
+        );
+    -webkit-mask: radial-gradient(circle, transparent 0 var(--tick-inner), #000 var(--tick-inner) var(--tick-outer), transparent var(--tick-outer) 100%);
+    mask: radial-gradient(circle, transparent 0 var(--tick-inner), #000 var(--tick-inner) var(--tick-outer), transparent var(--tick-outer) 100%);
+    z-index: 1;
+    transform: translateZ(0);
+}
+.clock::after{
+    content: "";
+    position: absolute;
+    inset: 6%;
+    border-radius: 50%;
+    background:
+        repeating-conic-gradient(
+            from calc(-90deg - var(--tick-offset)),
+            rgba(15, 23, 42, 0.95) 0deg 0.7deg,
+            rgba(15, 23, 42, 0.55) 0.7deg 0.9deg,
+            transparent 0.9deg 30deg
+        );
+    -webkit-mask: radial-gradient(circle, transparent 0 calc(var(--tick-inner) - 6%), #000 calc(var(--tick-inner) - 6%) var(--tick-outer), transparent var(--tick-outer) 100%);
+    mask: radial-gradient(circle, transparent 0 calc(var(--tick-inner) - 6%), #000 calc(var(--tick-inner) - 6%) var(--tick-outer), transparent var(--tick-outer) 100%);
+    z-index: 2;
+    transform: translateZ(0);
+}
+.clock-face{
+    position: absolute;
+    inset: 6%;
+    border-radius: 50%;
+    z-index: 3;
+    pointer-events: none;
+}
+.clock-number{
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    font-weight: 600;
+    color: var(--ink);
+    font-size: clamp(1rem, 2.8vw, 1.45rem);
+    transform: rotate(var(--angle));
+}
+.clock-number span{
+    transform: translateY(-62%) rotate(calc(-1 * var(--angle)));
+    font-family: "Space Grotesk", sans-serif;
+}
+.clock-number.n12{ --angle: 0deg; }
+.clock-number.n1{ --angle: 30deg; }
+.clock-number.n2{ --angle: 60deg; }
+.clock-number.n3{ --angle: 90deg; }
+.clock-number.n4{ --angle: 120deg; }
+.clock-number.n5{ --angle: 150deg; }
+.clock-number.n6{ --angle: 180deg; }
+.clock-number.n7{ --angle: 210deg; }
+.clock-number.n8{ --angle: 240deg; }
+.clock-number.n9{ --angle: 270deg; }
+.clock-number.n10{ --angle: 300deg; }
+.clock-number.n11{ --angle: 330deg; }
+.clock-center{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 14px;
+    height: 14px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: var(--ink);
+    box-shadow: 0 0 0 6px rgba(15, 23, 42, 0.15);
+    z-index: 5;
+}
+.wallet{
+    /*background-color: orange;*/
+    height: 100%;
+    width: 100%;
+    max-width: 800px;
+
+    /*border-radius: 50%;*/
+    /*border: 5px solid black;*/
+    position: relative;
+    /*background-image: url("https://cdn.icon-icons.com/icons2/1471/PNG/512/07-wallet_101185.png");*/
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+.vulling{
+    background-image: url("https://cdn.icon-icons.com/icons2/1471/PNG/512/07-wallet_101185.png");
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+.hour{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    height: 6px;
+    width: 28%;
+    background: linear-gradient(90deg, #f97316, #ef4444);
+    border-radius: 999px;
+    transform: rotate(-90deg);
+    transform-origin: left;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35);
+    z-index: 4;
+}
+.min,
+.sec{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    height: 4px;
+    width: 42%;
+    background: linear-gradient(90deg, #0ea5e9, #14b8a6);
+    border-radius: 999px;
+    transform: rotate(-90deg);
+    transform-origin: left;
+    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+    z-index: 4;
+}
+.sec{
+    height: 2px;
+    width: 48%;
+    background: linear-gradient(90deg, #0f3d2e, #166534);
+    box-shadow: 0 4px 10px rgba(22, 101, 52, 0.25);
+}
+.digitalClock{
+    font-family: "IBM Plex Mono", "Courier New", monospace;
+    color: var(--ink);
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    text-align: center;
+    padding: 0.85rem 1.1rem;
+    margin: 0.75rem auto;
+    background: var(--panel);
+    border-radius: 18px;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+    width: min(260px, 90%);
+}
+.digitalClockSeconds{
+    font-size: 0.7em;
+}
+.clock-message{
+    min-height: 1.25rem;
+    margin-top: 0.75rem;
+    font-size: 0.95rem;
+    color: #b45309;
+}
+.clock-btn{
+    border-radius: 999px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+.btn-warning.clock-btn{
+    background: #fbbf24;
+    border-color: #f59e0b;
+    color: #1f2937;
+}
+.btn-success.clock-btn{
+    background: #10b981;
+    border-color: #0f766e;
+}
+.is-hidden{
+    display: none !important;
+}
+
+body.clock-home{
+    font-family: "Space Grotesk", sans-serif;
+    color: var(--ink);
+    background:
+        radial-gradient(1000px 520px at 12% -10%, #dbeafe 0%, rgba(219, 234, 254, 0) 60%),
+        radial-gradient(900px 460px at 88% 0%, #ffedd5 0%, rgba(255, 237, 213, 0) 60%),
+        linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+    min-height: 100vh;
+}
+.home-shell{
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+.home-panel{
+    width: min(1040px, 100%);
+}
+.home-hero{
+    text-align: center;
+    margin-bottom: 2rem;
+}
+.home-kicker{
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 0.9rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.72);
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+    font-size: 0.95rem;
+}
+.home-title{
+    margin: 1rem 0 0.75rem;
+    font-size: clamp(2.2rem, 6vw, 4.4rem);
+    font-weight: 600;
+    line-height: 0.95;
+}
+.home-subtitle{
+    max-width: 640px;
+    margin: 0 auto;
+    color: var(--ink-muted);
+    font-size: 1.05rem;
+}
+.home-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+.home-card{
+    position: relative;
+    display: block;
+    padding: 1.5rem;
+    min-height: 260px;
+    border-radius: 28px;
+    color: inherit;
+    text-decoration: none;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.88);
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.12);
+    transition: transform 180ms ease, box-shadow 180ms ease;
+}
+.home-card:hover,
+.home-card:focus-visible{
+    transform: translateY(-4px);
+    box-shadow: 0 28px 48px rgba(15, 23, 42, 0.16);
+}
+.home-card::before{
+    content: "";
+    position: absolute;
+    inset: auto -20% -25% auto;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: rgba(14, 165, 233, 0.14);
+}
+.home-card--warm::before{
+    background: rgba(249, 115, 22, 0.16);
+}
+.home-card-label{
+    display: inline-flex;
+    padding: 0.45rem 0.75rem;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.06);
+    font-size: 0.9rem;
+}
+.home-card-title{
+    margin-top: 1rem;
+    font-size: clamp(1.9rem, 4vw, 2.8rem);
+    font-weight: 600;
+}
+.home-card-copy{
+    max-width: 28ch;
+    margin-top: 0.75rem;
+    color: var(--ink-muted);
+}
+.home-card-arrow{
+    position: absolute;
+    right: 1.25rem;
+    bottom: 1.25rem;
+    width: 52px;
+    height: 52px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: #111827;
+    color: #fff;
+    font-size: 1.2rem;
+}
+
+body.clock-practice{
+    font-family: "Space Grotesk", sans-serif;
+    color: var(--ink);
+    background:
+        radial-gradient(1200px 600px at 8% -10%, #e8f3ff 0%, rgba(232, 243, 255, 0) 60%),
+        radial-gradient(800px 400px at 92% 8%, #fff3e0 0%, rgba(255, 243, 224, 0) 60%),
+        linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+    min-height: 100vh;
+}
+.practice-shell{
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem 3rem;
+}
+.practice-topbar{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+.practice-title{
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+.practice-grid{
+    display: grid;
+    grid-template-columns: minmax(280px, 360px) 1fr;
+    gap: 1.5rem;
+    align-items: start;
+}
+.practice-card{
+    background: var(--panel);
+    border-radius: 24px;
+    padding: 1.25rem;
+    border: 1px solid var(--panel-border);
+    box-shadow: 0 16px 40px rgba(15, 23, 42, 0.1);
+}
+.practice-card h2{
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+.practice-options{
+    display: grid;
+    gap: 0.85rem;
+}
+.practice-clock-stage{
+    display: flex;
+    justify-content: center;
+    margin: 1rem 0 1.25rem;
+}
+.practice-clock-shell{
+    width: min(70vw, 460px);
+    aspect-ratio: 1;
+}
+.practice-meta{
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}
+.practice-progress{
+    font-weight: 600;
+}
+.practice-feedback{
+    min-height: 3rem;
+}
+.practice-feedback-box{
+    padding: 0.85rem 1rem;
+    border-radius: 16px;
+    font-weight: 600;
+}
+.practice-feedback-box.is-correct{
+    background: rgba(16, 185, 129, 0.16);
+    color: #065f46;
+}
+.practice-feedback-box.is-wrong{
+    background: rgba(239, 68, 68, 0.14);
+    color: #991b1b;
+}
+.practice-summary{
+    margin-top: 1rem;
+    padding: 1rem;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(15, 23, 42, 0.08);
+}
+.practice-history{
+    margin-top: 1rem;
+    display: grid;
+    gap: 0.65rem;
+}
+.practice-history-item{
+    padding: 0.75rem 0.9rem;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.78);
+    border: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+@media (max-width: 991.98px){
+    .clock-side{
+        display: none;
+    }
+    .clock-overlay-actions{
+        display: flex;
+    }
+    .clock-stage{
+        height: 70vh;
+    }
+    .clock-shell{
+        --clock-size: min(92vw, calc(70vh - 3rem));
+    }
+    .practice-grid{
+        grid-template-columns: 1fr;
+    }
+    .practice-clock-shell{
+        width: min(88vw, 420px);
+    }
+}
+@media (max-width: 575.98px){
+    .clock-shell.clock-shell-compare{
+        width: 100%;
+        max-width: none;
+        padding: 0.6rem;
+    }
+    .home-shell{
+        padding: 1rem;
+    }
+    .home-card{
+        min-height: 220px;
+    }
+}
+@media (min-width: 992px){
+    .clock-compare-filters.collapse,
+    .clock-filters.collapse{
+        display: block !important;
+        height: auto !important;
+        visibility: visible;
+        overflow: visible;
+    }
+    .clock-compare-filters.collapse:not(.show),
+    .clock-filters.collapse:not(.show){
+        height: auto !important;
+    }
+}

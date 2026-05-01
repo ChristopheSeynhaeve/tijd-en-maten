@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="nl">
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Oefen kloklezen met een analoge klok.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="klok.css" rel="stylesheet">
+    <title>Klok oefenen</title>
+</head>
+<body class="clock-practice">
+    <main class="practice-shell">
+        <div class="practice-topbar">
+            <div class="practice-title">Klok oefenen</div>
+            <a class="btn btn-outline-dark clock-btn" href="index.html">
+                <i class="bi bi-house-door me-2"></i>Startpagina
+            </a>
+        </div>
+
+        <div class="practice-grid">
+            <section class="practice-card">
+                <h2>Instellingen</h2>
+                <form id="practiceSetup" class="practice-options">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" checked id="practiceHour">
+                        <label class="form-check-label" for="practiceHour">uur</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="practiceHalfHour">
+                        <label class="form-check-label" for="practiceHalfHour">uur 30</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="practiceQuarter">
+                        <label class="form-check-label" for="practiceQuarter">kwart voor / kwart over</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="practiceFiveMin">
+                        <label class="form-check-label" for="practiceFiveMin">5 min</label>
+                    </div>
+
+                    <div>
+                        <label class="form-label" for="leerling">Je naam</label>
+                        <input type="text" class="form-control" id="leerling" placeholder="Vul je naam in">
+                    </div>
+
+                    <div>
+                        <label class="form-label" for="aantalOefeningen">Aantal oefeningen</label>
+                        <select class="form-select" id="aantalOefeningen">
+                            <option value="5" selected>5</option>
+                            <option value="10">10</option>
+                            <option value="15">15</option>
+                            <option value="20">20</option>
+                        </select>
+                    </div>
+
+                    <button id="startOefening" class="btn btn-success clock-btn" type="submit">Start oefening</button>
+                </form>
+            </section>
+
+            <section class="practice-card">
+                <div class="practice-meta">
+                    <div class="practice-progress" id="oefening">Nog niet gestart</div>
+                    <button id="herbeginnen" class="btn btn-outline-secondary clock-btn" type="button">Herbeginnen</button>
+                </div>
+
+                <div class="practice-clock-stage">
+                    <div class="clock-shell practice-clock-shell">
+                        <div class="clock">
+                            <div class="clock-face">
+                                <span class="clock-number n12"><span>12</span></span>
+                                <span class="clock-number n1"><span>1</span></span>
+                                <span class="clock-number n2"><span>2</span></span>
+                                <span class="clock-number n3"><span>3</span></span>
+                                <span class="clock-number n4"><span>4</span></span>
+                                <span class="clock-number n5"><span>5</span></span>
+                                <span class="clock-number n6"><span>6</span></span>
+                                <span class="clock-number n7"><span>7</span></span>
+                                <span class="clock-number n8"><span>8</span></span>
+                                <span class="clock-number n9"><span>9</span></span>
+                                <span class="clock-number n10"><span>10</span></span>
+                                <span class="clock-number n11"><span>11</span></span>
+                            </div>
+                            <div class="min" id="practiceMin"></div>
+                            <div class="hour" id="practiceHourHand"></div>
+                            <div class="clock-center" aria-hidden="true"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <form id="practiceAnswerForm" class="row g-3 align-items-end is-hidden">
+                    <div class="col-md-6">
+                        <label class="form-label" for="inputDigitaleKlok">Digitale klok</label>
+                        <input type="time" class="form-control" id="inputDigitaleKlok" step="60">
+                    </div>
+                    <div class="col-md-6 d-flex gap-2">
+                        <button id="btnControleer" class="btn btn-warning clock-btn" type="submit">Controleer</button>
+                        <button id="nieuweKlok" class="btn btn-success clock-btn is-hidden" type="button">Volgende oefening</button>
+                    </div>
+                </form>
+
+                <div id="practiceFeedback" class="practice-feedback mt-3"></div>
+                <div id="practiceSummary" class="practice-summary is-hidden"></div>
+                <div id="practiceHistory" class="practice-history"></div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+    const practiceState = {
+        currentIndex: 0,
+        total: 0,
+        score: 0,
+        currentTime: null,
+        history: []
+    };
+
+    function getPracticeMinuteOptions() {
+        const options = [];
+        if (document.getElementById("practiceHour").checked) {
+            options.push(0);
+        }
+        if (document.getElementById("practiceHalfHour").checked) {
+            options.push(30);
+        }
+        if (document.getElementById("practiceQuarter").checked) {
+            options.push(15, 45);
+        }
+        if (document.getElementById("practiceFiveMin").checked) {
+            options.push(5, 10, 20, 25, 35, 40, 50, 55);
+        }
+        return Array.from(new Set(options));
+    }
+
+    function formatPracticeTime(hour, minute) {
+        return String(hour).padStart(2, "0") + ":" + String(minute).padStart(2, "0");
+    }
+
+    function drawPracticeClock(hour, minute) {
+        const minDeg = (minute / 60) * 360 - 90;
+        const xtraHourDeg = (minute / 60) * 30;
+        const hourDeg = (hour / 12) * 360 - 90 + xtraHourDeg;
+        document.getElementById("practiceMin").style.transform = "rotate(" + minDeg + "deg)";
+        document.getElementById("practiceHourHand").style.transform = "rotate(" + hourDeg + "deg)";
+    }
+
+    function renderPracticeProgress() {
+        if (practiceState.currentIndex === 0) {
+            document.getElementById("oefening").textContent = "Nog niet gestart";
+            return;
+        }
+        document.getElementById("oefening").textContent = "Oefening: " + practiceState.currentIndex + " / " + practiceState.total;
+    }
+
+    function renderPracticeHistory() {
+        const historyEl = document.getElementById("practiceHistory");
+        historyEl.innerHTML = practiceState.history.map(function(item) {
+            return "<div class=\"practice-history-item\">Opgave " + item.index + ": " + item.correct + " - antwoord: " + item.answer + " - " + item.status + "</div>";
+        }).join("");
+    }
+
+    function setPracticeFeedback(message, isCorrect) {
+        document.getElementById("practiceFeedback").innerHTML =
+            "<div class=\"practice-feedback-box " + (isCorrect ? "is-correct" : "is-wrong") + "\">" + message + "</div>";
+    }
+
+    function nextPracticeClock() {
+        const minuteOptions = getPracticeMinuteOptions();
+        if (minuteOptions.length === 0) {
+            setPracticeFeedback("Kies minstens een optie om te oefenen.", false);
+            return;
+        }
+
+        const hour = Math.floor(Math.random() * 12) + 1;
+        const minute = minuteOptions[Math.floor(Math.random() * minuteOptions.length)];
+        practiceState.currentTime = {
+            hour: hour,
+            minute: minute,
+            digital: formatPracticeTime(hour, minute)
+        };
+        practiceState.currentIndex += 1;
+
+        drawPracticeClock(hour, minute);
+        renderPracticeProgress();
+        document.getElementById("inputDigitaleKlok").value = "";
+        document.getElementById("inputDigitaleKlok").disabled = false;
+        document.getElementById("btnControleer").disabled = false;
+        document.getElementById("nieuweKlok").classList.add("is-hidden");
+        document.getElementById("practiceFeedback").innerHTML = "";
+    }
+
+    function finishPractice() {
+        const summary = document.getElementById("practiceSummary");
+        const leerling = document.getElementById("leerling").value.trim();
+        const nameText = leerling ? leerling + ", " : "";
+        summary.innerHTML = "<strong>" + nameText + "je score is " + practiceState.score + " / " + practiceState.total + ".</strong>";
+        summary.classList.remove("is-hidden");
+    }
+
+    document.getElementById("practiceSetup").addEventListener("submit", function(event) {
+        event.preventDefault();
+        const leerling = document.getElementById("leerling").value.trim();
+        if (!leerling) {
+            alert("Vul eerst je naam in.");
+            return;
+        }
+
+        practiceState.currentIndex = 0;
+        practiceState.total = Number(document.getElementById("aantalOefeningen").value);
+        practiceState.score = 0;
+        practiceState.history = [];
+        practiceState.currentTime = null;
+
+        document.getElementById("practiceAnswerForm").classList.remove("is-hidden");
+        document.getElementById("practiceSummary").classList.add("is-hidden");
+        document.getElementById("practiceHistory").innerHTML = "";
+        nextPracticeClock();
+    });
+
+    document.getElementById("practiceAnswerForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+        if (!practiceState.currentTime) {
+            return;
+        }
+
+        const answer = document.getElementById("inputDigitaleKlok").value;
+        if (!answer) {
+            setPracticeFeedback("Vul eerst een digitale tijd in.", false);
+            return;
+        }
+
+        const isCorrect = answer === practiceState.currentTime.digital;
+        if (isCorrect) {
+            practiceState.score += 1;
+            setPracticeFeedback("Juist. De tijd is " + practiceState.currentTime.digital + ".", true);
+        } else {
+            setPracticeFeedback("Fout. De juiste tijd is " + practiceState.currentTime.digital + ".", false);
+        }
+
+        practiceState.history.unshift({
+            index: practiceState.currentIndex,
+            correct: practiceState.currentTime.digital,
+            answer: answer,
+            status: isCorrect ? "juist" : "fout"
+        });
+        renderPracticeHistory();
+
+        document.getElementById("inputDigitaleKlok").disabled = true;
+        document.getElementById("btnControleer").disabled = true;
+
+        if (practiceState.currentIndex >= practiceState.total) {
+            finishPractice();
+            document.getElementById("nieuweKlok").classList.add("is-hidden");
+        } else {
+            document.getElementById("nieuweKlok").classList.remove("is-hidden");
+        }
+    });
+
+    document.getElementById("nieuweKlok").addEventListener("click", function() {
+        nextPracticeClock();
+    });
+
+    document.getElementById("herbeginnen").addEventListener("click", function() {
+        practiceState.currentIndex = 0;
+        practiceState.total = 0;
+        practiceState.score = 0;
+        practiceState.currentTime = null;
+        practiceState.history = [];
+        document.getElementById("practiceSetup").reset();
+        document.getElementById("practiceHour").checked = true;
+        document.getElementById("practiceAnswerForm").classList.add("is-hidden");
+        document.getElementById("practiceFeedback").innerHTML = "";
+        document.getElementById("practiceSummary").classList.add("is-hidden");
+        document.getElementById("practiceHistory").innerHTML = "";
+        renderPracticeProgress();
+        drawPracticeClock(0, 0);
+    });
+
+    drawPracticeClock(0, 0);
+    </script>
+</body>
+</html>

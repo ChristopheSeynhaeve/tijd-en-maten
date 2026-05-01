@@ -1,0 +1,611 @@
+<!doctype html>
+<html lang="nl">
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Vergelijk twee klokken en bereken het tijdsverschil.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="origin-when-cross-origin">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="klok.css" rel="stylesheet">
+    <title>Klok vergelijken</title>
+</head>
+<body class="clock-page clock-compare-page">
+    <div class="clock-layout">
+        <div class="clock-topbar clock-compare-topbar">
+            <div class="clock-compare-title" data-i18n="title">Klok vergelijken</div>
+            <div class="clock-compare-actions">
+                <button type="button" class="btn btn-dark clock-filter-btn d-lg-none" data-bs-toggle="collapse" data-bs-target="#clockCompareFiltersPanel" aria-controls="clockCompareFiltersPanel" aria-expanded="false">
+                    <i class="bi bi-funnel me-2"></i><span data-i18n="filters">Filters</span>
+                </button>
+                <a class="btn btn-outline-dark clock-link-btn" href="klok.html">
+                    <i class="bi bi-clock-history me-2"></i><span data-i18n="singleClockLink">Enkele klok</span>
+                </a>
+                <a class="btn btn-outline-dark clock-link-btn" href="index.html">
+                    <i class="bi bi-house-door me-2"></i><span>Startpagina</span>
+                </a>
+                <button type="button" class="btn btn-outline-dark clock-lang-toggle" id="clockCompareLangToggle" aria-pressed="false">
+                    <i class="bi bi-translate me-2"></i><span data-lang-label>NL</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="container clock-compare-container">
+            <div class="clock-compare-filters collapse show" id="clockCompareFiltersPanel">
+                <form class="row gx-3 gy-2 align-items-center">
+                    <div class="col-6 col-md-4 col-lg-auto">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="Uur" name="Uur" value="yes" checked>
+                            <label class="form-check-label" for="Uur"><span data-i18n="hour">uur</span></label>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-auto">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="halfUur" name="halfUur" value="yes">
+                            <label class="form-check-label" for="halfUur"><span data-i18n="halfHour">uur 30</span></label>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-auto">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="kwartier" name="kwartier" value="yes">
+                            <label class="form-check-label" for="kwartier"><span data-i18n="quarter">kwart voor / kwart over</span></label>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-auto">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="vijfmin" name="vijfmin" value="yes">
+                            <label class="form-check-label" for="vijfmin"><span data-i18n="fiveMin">5 min</span></label>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-auto">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="min" name="min" value="yes">
+                            <label class="form-check-label" for="min"><span data-i18n="oneMin">1 min</span></label>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-auto">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="sec" name="sec" value="yes">
+                            <label class="form-check-label" for="sec"><span data-i18n="seconds">seconden</span></label>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-auto">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="limitDiff" name="limitDiff" value="yes">
+                            <label class="form-check-label" for="limitDiff"><span data-i18n="maxDiffToggle">max verschil instellen</span></label>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-auto">
+                        <label class="form-label" for="maxDiffHours" data-i18n="maxDiffLabel">Max verschil (uren)</label>
+                        <input type="number" class="form-control" id="maxDiffHours" min="0" max="12" step="0.25" value="12" disabled>
+                    </div>
+                </form>
+            </div>
+
+            <div class="clock-compare-controls">
+                <div class="btn-group" role="group" aria-label="Weergave">
+                    <input type="radio" class="btn-check" name="clockView" id="viewAnalog" autocomplete="off" checked>
+                    <label class="btn btn-outline-dark" for="viewAnalog"><i class="bi bi-clock me-2"></i><span data-i18n="analog">Analog</span></label>
+                    <input type="radio" class="btn-check" name="clockView" id="viewDigital" autocomplete="off">
+                    <label class="btn btn-outline-dark" for="viewDigital"><i class="bi bi-display me-2"></i><span data-i18n="digital">Digitaal</span></label>
+                </div>
+                <div class="btn-group" role="group" aria-label="Modus">
+                    <input type="radio" class="btn-check" name="clockMode" id="modeResult" autocomplete="off" checked>
+                    <label class="btn btn-outline-dark" for="modeResult"><i class="bi bi-eye me-2"></i><span data-i18n="resultMode">Resultaat</span></label>
+                    <input type="radio" class="btn-check" name="clockMode" id="modePractice" autocomplete="off">
+                    <label class="btn btn-outline-dark" for="modePractice"><i class="bi bi-pencil-square me-2"></i><span data-i18n="practiceMode">Oefenmodus</span></label>
+                </div>
+                <button id="clockCompareRefresh" type="button" class="btn btn-success clock-btn clock-compare-refresh">
+                    <i class="bi bi-arrow-clockwise me-2"></i><span data-i18n="refresh">Vernieuw</span>
+                </button>
+            </div>
+
+            <div id="clockCompareMessage" class="clock-message" role="status" aria-live="polite"></div>
+
+            <div class="clock-compare-grid">
+                <div class="clock-compare-card" id="clockCardA">
+                    <div class="clock-compare-card-title" data-i18n="start">Start</div>
+                    <div class="clock-compare-analog">
+                        <div class="clock-shell clock-shell-compare">
+                            <div class="clock">
+                                <div class="clock-face">
+                                    <span class="clock-number n12"><span>12</span></span>
+                                    <span class="clock-number n1"><span>1</span></span>
+                                    <span class="clock-number n2"><span>2</span></span>
+                                    <span class="clock-number n3"><span>3</span></span>
+                                    <span class="clock-number n4"><span>4</span></span>
+                                    <span class="clock-number n5"><span>5</span></span>
+                                    <span class="clock-number n6"><span>6</span></span>
+                                    <span class="clock-number n7"><span>7</span></span>
+                                    <span class="clock-number n8"><span>8</span></span>
+                                    <span class="clock-number n9"><span>9</span></span>
+                                    <span class="clock-number n10"><span>10</span></span>
+                                    <span class="clock-number n11"><span>11</span></span>
+                                </div>
+                                <div class="min" id="clockAMin"></div>
+                                <div class="hour" id="clockAHour"></div>
+                                <div class="sec is-hidden" id="clockASec"></div>
+                                <div class="clock-center" aria-hidden="true"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clock-compare-digital is-hidden">
+                        <div class="digitalClock" id="digitalClockA">00:00</div>
+                        <div class="digitalClock" id="digitalClockAPM">12:00</div>
+                    </div>
+                </div>
+
+                <div class="clock-compare-card" id="clockCardB">
+                    <div class="clock-compare-card-title" data-i18n="end">Einde</div>
+                    <div class="clock-compare-analog">
+                        <div class="clock-shell clock-shell-compare">
+                            <div class="clock">
+                                <div class="clock-face">
+                                    <span class="clock-number n12"><span>12</span></span>
+                                    <span class="clock-number n1"><span>1</span></span>
+                                    <span class="clock-number n2"><span>2</span></span>
+                                    <span class="clock-number n3"><span>3</span></span>
+                                    <span class="clock-number n4"><span>4</span></span>
+                                    <span class="clock-number n5"><span>5</span></span>
+                                    <span class="clock-number n6"><span>6</span></span>
+                                    <span class="clock-number n7"><span>7</span></span>
+                                    <span class="clock-number n8"><span>8</span></span>
+                                    <span class="clock-number n9"><span>9</span></span>
+                                    <span class="clock-number n10"><span>10</span></span>
+                                    <span class="clock-number n11"><span>11</span></span>
+                                </div>
+                                <div class="min" id="clockBMin"></div>
+                                <div class="hour" id="clockBHour"></div>
+                                <div class="sec is-hidden" id="clockBSec"></div>
+                                <div class="clock-center" aria-hidden="true"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clock-compare-digital is-hidden">
+                        <div class="digitalClock" id="digitalClockB">00:00</div>
+                        <div class="digitalClock" id="digitalClockBPM">12:00</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="clock-compare-result">
+                <div id="resultModePanel" class="clock-compare-result-panel">
+                    <button id="toggleResultButton" type="button" class="btn btn-warning clock-btn" data-i18n="showResult">Toon resultaat</button>
+                    <div id="resultOutput" class="clock-compare-output is-hidden"></div>
+                </div>
+
+                <div id="practiceModePanel" class="clock-compare-practice is-hidden">
+                    <div class="clock-compare-inputs">
+                        <div class="clock-compare-input">
+                            <label class="form-label" for="diffHours" data-i18n="hoursLabel">Uur</label>
+                            <input type="number" class="form-control" id="diffHours" min="0" max="11" value="0">
+                        </div>
+                        <div class="clock-compare-input">
+                            <label class="form-label" for="diffMinutes" data-i18n="minutesLabel">Min</label>
+                            <input type="number" class="form-control" id="diffMinutes" min="0" max="59" value="0">
+                        </div>
+                        <div class="clock-compare-input" id="diffSecondsWrap">
+                            <label class="form-label" for="diffSeconds" data-i18n="secondsLabel">Sec</label>
+                            <input type="number" class="form-control" id="diffSeconds" min="0" max="59" value="0">
+                        </div>
+                    </div>
+                    <button id="checkDiffButton" type="button" class="btn btn-success clock-btn" data-i18n="validate">Valideer</button>
+                    <div id="practiceFeedback" class="clock-compare-feedback" aria-live="polite"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js" integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const CLOCK_COMPARE_TRANSLATIONS = {
+            NL: {
+                langLabel: "NL",
+                title: "Klok vergelijken",
+                filters: "Filters",
+                analog: "Analoog",
+                digital: "Digitaal",
+                resultMode: "Resultaat",
+                practiceMode: "Oefenmodus",
+                refresh: "Vernieuw",
+                showResult: "Toon resultaat",
+                hideResult: "Verberg resultaat",
+                hoursLabel: "Uur",
+                minutesLabel: "Min",
+                secondsLabel: "Sec",
+                validate: "Valideer",
+                hour: "uur",
+                halfHour: "uur 30",
+                quarter: "kwart voor / kwart over",
+                fiveMin: "5 min",
+                oneMin: "1 min",
+                seconds: "seconden",
+                maxDiffToggle: "max verschil instellen",
+                maxDiffLabel: "Max verschil (uren)",
+                singleClockLink: "Enkele klok",
+                selectOptionMessage: "Kies minstens een optie om een tijd te genereren.",
+                noDiffMessage: "Geen tijdsverschil mogelijk met deze filters en dit maximum.",
+                diffLabel: "Verschil",
+                diffHours: "uur",
+                diffMinutes: "min",
+                diffSeconds: "sec",
+                correct: "Juist!",
+                wrong: "Fout. {answer}",
+                start: "Start",
+                end: "Einde"
+            },
+            FR: {
+                langLabel: "FR",
+                title: "Comparer les horloges",
+                filters: "Filtres",
+                analog: "Analogique",
+                digital: "Numerique",
+                resultMode: "Resultat",
+                practiceMode: "Mode pratique",
+                refresh: "Actualiser",
+                showResult: "Afficher le resultat",
+                hideResult: "Masquer le resultat",
+                hoursLabel: "Heure",
+                minutesLabel: "Min",
+                secondsLabel: "Sec",
+                validate: "Valider",
+                hour: "heure",
+                halfHour: "heure 30",
+                quarter: "quart avant / quart apres",
+                fiveMin: "5 min",
+                oneMin: "1 min",
+                seconds: "secondes",
+                maxDiffToggle: "fixer la difference max",
+                maxDiffLabel: "Difference max (heures)",
+                singleClockLink: "Horloge simple",
+                selectOptionMessage: "Choisissez au moins une option pour generer une heure.",
+                noDiffMessage: "Aucune difference possible avec ces filtres et ce maximum.",
+                diffLabel: "Difference",
+                diffHours: "h",
+                diffMinutes: "min",
+                diffSeconds: "s",
+                correct: "Correct !",
+                wrong: "Faux. {answer}",
+                start: "Debut",
+                end: "Fin"
+            }
+        };
+
+        const langStorageKey = "clockCompareLang";
+        const viewAnalog = document.getElementById("viewAnalog");
+        const viewDigital = document.getElementById("viewDigital");
+        const modeResult = document.getElementById("modeResult");
+        const modePractice = document.getElementById("modePractice");
+        const messageEl = document.getElementById("clockCompareMessage");
+        const resultButton = document.getElementById("toggleResultButton");
+        const resultOutput = document.getElementById("resultOutput");
+        const resultPanel = document.getElementById("resultModePanel");
+        const practicePanel = document.getElementById("practiceModePanel");
+        const feedbackEl = document.getElementById("practiceFeedback");
+        const diffHoursInput = document.getElementById("diffHours");
+        const diffMinutesInput = document.getElementById("diffMinutes");
+        const diffSecondsInput = document.getElementById("diffSeconds");
+        const diffSecondsWrap = document.getElementById("diffSecondsWrap");
+        const limitDiffToggle = document.getElementById("limitDiff");
+        const maxDiffInput = document.getElementById("maxDiffHours");
+
+        let currentTimes = null;
+        let showSeconds = false;
+        let currentLang = normalizeCompareLang(localStorage.getItem(langStorageKey) || document.documentElement.lang);
+
+        function normalizeCompareLang(lang) {
+            const raw = (lang || "").toString().trim().toUpperCase();
+            return raw.startsWith("FR") ? "FR" : "NL";
+        }
+
+        function getCompareLabels() {
+            return CLOCK_COMPARE_TRANSLATIONS[currentLang] || CLOCK_COMPARE_TRANSLATIONS.NL;
+        }
+
+        function formatCompareLabel(template, vars) {
+            return template.replace(/\{(\w+)\}/g, function(_, key) {
+                return vars && vars[key] !== undefined ? vars[key] : "";
+            });
+        }
+
+        function applyCompareLanguage(lang) {
+            currentLang = normalizeCompareLang(lang);
+            localStorage.setItem(langStorageKey, currentLang);
+            const labels = getCompareLabels();
+            document.documentElement.setAttribute("lang", currentLang === "FR" ? "fr" : "nl");
+            document.querySelectorAll("[data-i18n]").forEach(function(el) {
+                const key = el.getAttribute("data-i18n");
+                if (labels[key]) {
+                    el.textContent = labels[key];
+                }
+            });
+            const langLabel = document.querySelector("[data-lang-label]");
+            if (langLabel) {
+                langLabel.textContent = labels.langLabel;
+            }
+            updateResultButtonLabel();
+            if (currentTimes) {
+                updateResultOutput();
+            }
+        }
+
+        function applyView() {
+            const showDigital = viewDigital.checked;
+            document.querySelectorAll(".clock-compare-analog").forEach(function(el) {
+                el.classList.toggle("is-hidden", showDigital);
+            });
+            document.querySelectorAll(".clock-compare-digital").forEach(function(el) {
+                el.classList.toggle("is-hidden", !showDigital);
+            });
+        }
+
+        function applyMode() {
+            const practice = modePractice.checked;
+            resultPanel.classList.toggle("is-hidden", practice);
+            practicePanel.classList.toggle("is-hidden", !practice);
+        }
+
+        function getFilters() {
+            return {
+                hour: document.getElementById("Uur").checked,
+                halfHour: document.getElementById("halfUur").checked,
+                quarter: document.getElementById("kwartier").checked,
+                fiveMin: document.getElementById("vijfmin").checked,
+                oneMin: document.getElementById("min").checked,
+                seconds: document.getElementById("sec").checked
+            };
+        }
+
+        function getMaxDiffSetting() {
+            const enabled = limitDiffToggle.checked;
+            let maxHours = parseFloat(maxDiffInput.value);
+            if (Number.isNaN(maxHours)) {
+                maxHours = 12;
+            }
+            maxHours = Math.min(12, Math.max(0, maxHours));
+            maxDiffInput.value = maxHours;
+            return { enabled: enabled, maxSeconds: Math.round(maxHours * 3600) };
+        }
+
+        function buildMinuteOptions(filters) {
+            const set = new Set();
+            if (filters.hour) {
+                set.add(0);
+            }
+            if (filters.halfHour) {
+                set.add(30);
+            }
+            if (filters.quarter) {
+                set.add(15);
+                set.add(45);
+            }
+            if (filters.fiveMin) {
+                [5, 10, 20, 25, 35, 40, 50, 55].forEach(function(minute) {
+                    set.add(minute);
+                });
+            }
+            if (filters.oneMin) {
+                const excluded = new Set([0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55]);
+                for (let i = 1; i < 60; i += 1) {
+                    if (!excluded.has(i)) {
+                        set.add(i);
+                    }
+                }
+            }
+            return Array.from(set);
+        }
+
+        function pickRandom(list) {
+            return list[Math.floor(Math.random() * list.length)];
+        }
+
+        function generateTime(filters, minuteOptions) {
+            const hour = Math.floor(Math.random() * 12);
+            const minutes = pickRandom(minuteOptions);
+            const seconds = filters.seconds ? Math.floor(Math.random() * 60) : 0;
+            return { hour: hour, minutes: minutes, seconds: seconds };
+        }
+
+        function computeDiff(timeA, timeB) {
+            const totalA = timeA.hour * 3600 + timeA.minutes * 60 + timeA.seconds;
+            const totalB = timeB.hour * 3600 + timeB.minutes * 60 + timeB.seconds;
+            let diff = totalB - totalA;
+            if (diff < 0) {
+                diff += 12 * 3600;
+            }
+            return {
+                hours: Math.floor(diff / 3600),
+                minutes: Math.floor((diff % 3600) / 60),
+                seconds: diff % 60
+            };
+        }
+
+        function diffToSeconds(diff) {
+            return diff.hours * 3600 + diff.minutes * 60 + diff.seconds;
+        }
+
+        function setDigital(el, hourStr, minStr, secStr, includeSeconds) {
+            if (includeSeconds) {
+                el.innerHTML = hourStr + ":" + minStr + "<span class=\"digitalClockSeconds\">:" + secStr + "</span>";
+            } else {
+                el.textContent = hourStr + ":" + minStr;
+            }
+        }
+
+        function renderDigital(prefix, time, includeSeconds) {
+            const hourStr = String(time.hour).padStart(2, "0");
+            const hourPMStr = String(time.hour + 12).padStart(2, "0");
+            const minStr = String(time.minutes).padStart(2, "0");
+            const secStr = String(time.seconds).padStart(2, "0");
+            setDigital(document.getElementById("digitalClock" + prefix), hourStr, minStr, secStr, includeSeconds);
+            setDigital(document.getElementById("digitalClock" + prefix + "PM"), hourPMStr, minStr, secStr, includeSeconds);
+        }
+
+        function renderAnalog(prefix, time, includeSeconds) {
+            const minDeg = (time.minutes / 60) * 360 - 90;
+            const secDeg = (time.seconds / 60) * 360 - 90;
+            const xtraHourDeg = (time.minutes / 60) * 30;
+            const hourDeg = (time.hour / 12) * 360 - 90 + xtraHourDeg;
+            const minEl = document.getElementById("clock" + prefix + "Min");
+            const hourEl = document.getElementById("clock" + prefix + "Hour");
+            const secEl = document.getElementById("clock" + prefix + "Sec");
+            minEl.style.transform = "rotate(" + minDeg + "deg)";
+            hourEl.style.transform = "rotate(" + hourDeg + "deg)";
+            secEl.style.transform = "rotate(" + secDeg + "deg)";
+            secEl.classList.toggle("is-hidden", !includeSeconds);
+        }
+
+        function renderClock(prefix, time, includeSeconds) {
+            renderAnalog(prefix, time, includeSeconds);
+            renderDigital(prefix, time, includeSeconds);
+        }
+
+        function formatDiff(diff, includeSeconds) {
+            const labels = getCompareLabels();
+            let text = labels.diffLabel + ": " + diff.hours + " " + labels.diffHours + " " + diff.minutes + " " + labels.diffMinutes;
+            if (includeSeconds) {
+                text += " " + diff.seconds + " " + labels.diffSeconds;
+            }
+            return text;
+        }
+
+        function updateResultOutput() {
+            if (!currentTimes) {
+                resultOutput.textContent = "";
+                return;
+            }
+            resultOutput.textContent = formatDiff(currentTimes.diff, showSeconds);
+        }
+
+        function resetPractice() {
+            diffHoursInput.value = 0;
+            diffMinutesInput.value = 0;
+            diffSecondsInput.value = 0;
+            feedbackEl.textContent = "";
+            feedbackEl.classList.remove("text-success", "text-danger");
+        }
+
+        function toggleSecondsInputs(includeSeconds) {
+            diffSecondsWrap.classList.toggle("is-hidden", !includeSeconds);
+        }
+
+        function applyDiffLimitState() {
+            maxDiffInput.disabled = !limitDiffToggle.checked;
+        }
+
+        function refreshClocks() {
+            const labels = getCompareLabels();
+            messageEl.textContent = "";
+            const filters = getFilters();
+            const diffLimit = getMaxDiffSetting();
+            const minuteOptions = buildMinuteOptions(filters);
+
+            if (minuteOptions.length === 0) {
+                messageEl.textContent = labels.selectOptionMessage;
+                return;
+            }
+
+            showSeconds = filters.seconds;
+            toggleSecondsInputs(showSeconds);
+            applyDiffLimitState();
+
+            const allowSameTime = diffLimit.enabled && diffLimit.maxSeconds === 0;
+            let timeA = null;
+            let timeB = null;
+            let diff = null;
+            let attempts = 0;
+
+            while (attempts < 300) {
+                timeA = generateTime(filters, minuteOptions);
+                timeB = allowSameTime ? { hour: timeA.hour, minutes: timeA.minutes, seconds: timeA.seconds } : generateTime(filters, minuteOptions);
+                diff = computeDiff(timeA, timeB);
+                const diffSeconds = diffToSeconds(diff);
+                const sameTime = diffSeconds === 0;
+
+                if (!allowSameTime && sameTime) {
+                    attempts += 1;
+                    continue;
+                }
+                if (diffLimit.enabled && diffSeconds > diffLimit.maxSeconds) {
+                    attempts += 1;
+                    continue;
+                }
+                break;
+            }
+
+            if (attempts >= 300) {
+                messageEl.textContent = labels.noDiffMessage;
+                return;
+            }
+
+            currentTimes = { a: timeA, b: timeB, diff: diff };
+            renderClock("A", timeA, showSeconds);
+            renderClock("B", timeB, showSeconds);
+            updateResultOutput();
+            resultOutput.classList.add("is-hidden");
+            updateResultButtonLabel();
+            resetPractice();
+        }
+
+        function validatePractice() {
+            if (!currentTimes) {
+                return;
+            }
+
+            const expected = currentTimes.diff;
+            const hours = parseInt(diffHoursInput.value, 10) || 0;
+            const minutes = parseInt(diffMinutesInput.value, 10) || 0;
+            const seconds = parseInt(diffSecondsInput.value, 10) || 0;
+            let correct = hours === expected.hours && minutes === expected.minutes;
+
+            if (showSeconds) {
+                correct = correct && seconds === expected.seconds;
+            }
+
+            const labels = getCompareLabels();
+            if (correct) {
+                feedbackEl.textContent = labels.correct;
+                feedbackEl.classList.remove("text-danger");
+                feedbackEl.classList.add("text-success");
+            } else {
+                feedbackEl.textContent = formatCompareLabel(labels.wrong, { answer: formatDiff(expected, showSeconds) });
+                feedbackEl.classList.remove("text-success");
+                feedbackEl.classList.add("text-danger");
+            }
+        }
+
+        function updateResultButtonLabel() {
+            const labels = getCompareLabels();
+            resultButton.textContent = resultOutput.classList.contains("is-hidden") ? labels.showResult : labels.hideResult;
+        }
+
+        viewAnalog.addEventListener("change", applyView);
+        viewDigital.addEventListener("change", applyView);
+        modeResult.addEventListener("change", applyMode);
+        modePractice.addEventListener("change", applyMode);
+        limitDiffToggle.addEventListener("change", applyDiffLimitState);
+        maxDiffInput.addEventListener("change", getMaxDiffSetting);
+        document.getElementById("clockCompareLangToggle").addEventListener("click", function() {
+            applyCompareLanguage(currentLang === "NL" ? "FR" : "NL");
+        });
+        document.getElementById("clockCompareRefresh").addEventListener("click", refreshClocks);
+        resultButton.addEventListener("click", function() {
+            resultOutput.classList.toggle("is-hidden");
+            updateResultButtonLabel();
+        });
+        document.getElementById("checkDiffButton").addEventListener("click", validatePractice);
+
+        applyCompareLanguage(currentLang);
+        applyView();
+        applyMode();
+        applyDiffLimitState();
+        refreshClocks();
+    });
+    </script>
+</body>
+</html>

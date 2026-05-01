@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="nl">
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Kloklezen met analoge en digitale klok.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="origin-when-cross-origin">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="klok.css" rel="stylesheet">
+    <title>Klok</title>
+</head>
+<body class="clock-page">
+    <div class="clock-layout">
+        <div class="clock-topbar clock-page-topbar">
+            <div class="clock-page-title" data-i18n="title">Klok</div>
+            <div class="clock-page-actions">
+                <a class="btn btn-outline-dark clock-link-btn" href="index.html">
+                    <i class="bi bi-house-door me-2"></i><span>Startpagina</span>
+                </a>
+                <button type="button" class="btn btn-dark clock-filter-btn d-lg-none" data-bs-toggle="collapse" data-bs-target="#clockFiltersPanel" aria-controls="clockFiltersPanel" aria-expanded="false">
+                    <i class="bi bi-funnel me-2"></i><span data-i18n="filters">Filters</span>
+                </button>
+                <button type="button" class="btn btn-outline-dark clock-lang-toggle" id="clockLangToggle" aria-pressed="false">
+                    <i class="bi bi-translate me-2"></i><span data-lang-label>NL</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="clock-filters collapse show" id="clockFiltersPanel">
+            <form class="row gx-3 gy-2 align-items-center">
+                <div class="col-6 col-md-4 col-lg-auto">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" checked id="Uur" name="Uur" value="yes">
+                        <label class="form-check-label" for="Uur"><span data-i18n="hour">uur</span></label>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-auto">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="halfUur" name="halfUur" value="yes">
+                        <label class="form-check-label" for="halfUur"><span data-i18n="halfHour">uur 30</span></label>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-auto">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="kwartier" name="kwartier" value="yes">
+                        <label class="form-check-label" for="kwartier"><span data-i18n="quarter">kwart voor / kwart over</span></label>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-auto">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="vijfmin" name="vijfmin" value="yes">
+                        <label class="form-check-label" for="vijfmin"><span data-i18n="fiveMin">5 min</span></label>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-auto">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="min" name="min" value="yes">
+                        <label class="form-check-label" for="min"><span data-i18n="oneMin">1 min</span></label>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-auto">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="sec" name="sec" value="yes">
+                        <label class="form-check-label" for="sec"><span data-i18n="seconds">seconden</span></label>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="row px-0 align-items-center justify-content-center clock-main">
+            <div class="col-12 col-lg-8 text-center">
+                <div class="clock-refresh-bar">
+                    <button id="clockRefreshTop" type="button" class="btn btn-success clock-btn clock-refresh">
+                        <i class="bi bi-arrow-clockwise me-2"></i><span data-i18n="refresh">Vernieuw</span>
+                    </button>
+                </div>
+                <section class="clock-stage">
+                    <div class="clock-shell">
+                        <div class="clock">
+                            <div class="clock-face">
+                                <span class="clock-number n12"><span>12</span></span>
+                                <span class="clock-number n1"><span>1</span></span>
+                                <span class="clock-number n2"><span>2</span></span>
+                                <span class="clock-number n3"><span>3</span></span>
+                                <span class="clock-number n4"><span>4</span></span>
+                                <span class="clock-number n5"><span>5</span></span>
+                                <span class="clock-number n6"><span>6</span></span>
+                                <span class="clock-number n7"><span>7</span></span>
+                                <span class="clock-number n8"><span>8</span></span>
+                                <span class="clock-number n9"><span>9</span></span>
+                                <span class="clock-number n10"><span>10</span></span>
+                                <span class="clock-number n11"><span>11</span></span>
+                            </div>
+                            <div class="min" id="clockMin" data-value="0"></div>
+                            <div class="hour" id="clockHour" data-value="0"></div>
+                            <div class="sec is-hidden" id="clockSec" data-value="0"></div>
+                            <div class="clock-center" aria-hidden="true"></div>
+                        </div>
+                    </div>
+                </section>
+                <div id="clockMessage" class="clock-message" role="status" aria-live="polite"></div>
+            </div>
+
+            <div class="col-12 col-lg-4 text-center px-3 clock-side">
+                <div class="row py-5">
+                    <button class="btn btn-warning clock-btn" type="button" onclick="togglePane('digitaleKlok')">
+                        <i class="bi bi-clock me-2"></i><span data-i18n="showDigital">Toon digitale klok</span>
+                    </button>
+                    <div class="fs-1 is-hidden" id="digitaleKlok">
+                        <div class="digitalClock digitalClockValue">00:00</div>
+                        <div class="digitalClock digitalClockPMValue">12:00</div>
+                    </div>
+                </div>
+                <div class="row py-5">
+                    <button class="btn btn-warning clock-btn" type="button" onclick="togglePane('controleer')">
+                        <i class="bi bi-check2-circle me-2"></i><span data-i18n="check">Controleer</span>
+                    </button>
+                    <div class="fs-1 is-hidden controleerOutput" id="controleer"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="clock-overlay-actions">
+        <button class="btn btn-warning clock-btn" data-bs-toggle="modal" data-bs-target="#digitalClockModal">
+            <i class="bi bi-clock me-2"></i><span data-i18n="showDigital">Toon digitale klok</span>
+        </button>
+        <button class="btn btn-warning clock-btn" data-bs-toggle="modal" data-bs-target="#controleerModal">
+            <i class="bi bi-check2-circle me-2"></i><span data-i18n="check">Controleer</span>
+        </button>
+    </div>
+
+    <div class="modal fade" id="digitalClockModal" tabindex="-1" aria-labelledby="digitalClockLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="digitalClockLabel" data-i18n="digitalClockTitle">Digitale klok</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" data-i18n-aria="close" aria-label="Sluit"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="digitalClock digitalClockValue">00:00</div>
+                    <div class="digitalClock digitalClockPMValue">12:00</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="controleerModal" tabindex="-1" aria-labelledby="controleerLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="controleerLabel" data-i18n="checkTitle">Controleer</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" data-i18n-aria="close" aria-label="Sluit"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="controleerOutput"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js" integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous"></script>
+    <script>
+    const CLOCK_TRANSLATIONS = {
+        NL: {
+            langLabel: "NL",
+            title: "Klok",
+            filters: "Filters",
+            refresh: "Vernieuw",
+            showDigital: "Toon digitale klok",
+            check: "Controleer",
+            digitalClockTitle: "Digitale klok",
+            checkTitle: "Controleer",
+            close: "Sluit",
+            hour: "uur",
+            halfHour: "uur 30",
+            quarter: "kwart voor / kwart over",
+            fiveMin: "5 min",
+            oneMin: "1 min",
+            seconds: "seconden",
+            messageSelectOption: "Kies minstens een optie om een tijd te genereren.",
+            timeIsHour: "Het is {hour} uur.",
+            timeIsHour30: "Het is {hour} uur 30.",
+            timeIsQuarterPast: "Het is kwart over {hour}.",
+            timeIsHour15: "Het is {hour} uur 15.",
+            timeIsQuarterTo: "Het is kwart voor {nextHour}.",
+            timeIsHour45: "Het is {hour} uur 45.",
+            timeIsMinutesPast: "Het is {minutes} over {hour}.",
+            timeIsMinutesTo: "Het is {minutes} voor {nextHour}.",
+            timeIsHourMinutes: "Het is {hour} uur {minutes}.",
+            secondsSuffix: "en {seconds} seconden."
+        },
+        FR: {
+            langLabel: "FR",
+            title: "Horloge",
+            filters: "Filtres",
+            refresh: "Actualiser",
+            showDigital: "Afficher l'horloge numerique",
+            check: "Verifier",
+            digitalClockTitle: "Horloge numerique",
+            checkTitle: "Verifier",
+            close: "Fermer",
+            hour: "heure",
+            halfHour: "heure 30",
+            quarter: "quart avant / quart apres",
+            fiveMin: "5 min",
+            oneMin: "1 min",
+            seconds: "secondes",
+            messageSelectOption: "Choisissez au moins une option pour generer une heure.",
+            timeIsHour: "Il est {hour} heures.",
+            timeIsHour30: "Il est {hour} heures et demie.",
+            timeIsQuarterPast: "Il est {hour} heures et quart.",
+            timeIsHour15: "Il est {hour} heures quinze.",
+            timeIsQuarterTo: "Il est {nextHour} heures moins le quart.",
+            timeIsHour45: "Il est {hour} heures quarante-cinq.",
+            timeIsMinutesPast: "Il est {hour} heures {minutes}.",
+            timeIsMinutesTo: "Il est {nextHour} heures moins {minutes}.",
+            timeIsHourMinutes: "Il est {hour} heures {minutes}.",
+            secondsSuffix: "et {seconds} secondes."
+        }
+    };
+
+    const clockState = {
+        hour: 0,
+        minute: 0,
+        seconds: 0
+    };
+
+    const clockLangStorageKey = "clockLang";
+
+    function normalizeClockLang(lang) {
+        const raw = (lang || "").toString().trim().toUpperCase();
+        return raw.startsWith("FR") ? "FR" : "NL";
+    }
+
+    let currentClockLang = normalizeClockLang(localStorage.getItem(clockLangStorageKey) || document.documentElement.lang);
+
+    function getClockLabels() {
+        return CLOCK_TRANSLATIONS[currentClockLang] || CLOCK_TRANSLATIONS.NL;
+    }
+
+    function formatClockLabel(template, vars) {
+        return template.replace(/\{(\w+)\}/g, function(_, key) {
+            return vars && vars[key] !== undefined ? vars[key] : "";
+        });
+    }
+
+    function withSecondsIfNeeded(text, seconds, labels, includeSeconds) {
+        if (!includeSeconds) {
+            return text;
+        }
+        const suffix = formatClockLabel(labels.secondsSuffix, { seconds: seconds });
+        return text.replace(/\.\s*$/, "") + " " + suffix;
+    }
+
+    function applyClockLanguage(lang) {
+        currentClockLang = normalizeClockLang(lang);
+        localStorage.setItem(clockLangStorageKey, currentClockLang);
+        const labels = getClockLabels();
+        document.documentElement.setAttribute("lang", currentClockLang === "FR" ? "fr" : "nl");
+        document.querySelectorAll("[data-i18n]").forEach(function(el) {
+            const key = el.getAttribute("data-i18n");
+            if (labels[key]) {
+                el.textContent = labels[key];
+            }
+        });
+        document.querySelectorAll("[data-i18n-aria]").forEach(function(el) {
+            const key = el.getAttribute("data-i18n-aria");
+            if (labels[key]) {
+                el.setAttribute("aria-label", labels[key]);
+            }
+        });
+        const langLabel = document.querySelector("[data-lang-label]");
+        if (langLabel) {
+            langLabel.textContent = labels.langLabel;
+        }
+    }
+
+    function updateClockVisuals(hour, minute, seconds, showSeconds) {
+        const minDeg = (minute / 60) * 360 - 90;
+        const secDeg = (seconds / 60) * 360 - 90;
+        const xtraHourDeg = (minute / 60) * 30;
+        const hourDeg = (hour / 12) * 360 - 90 + xtraHourDeg;
+
+        document.getElementById("clockMin").style.transform = "rotate(" + minDeg + "deg)";
+        document.getElementById("clockHour").style.transform = "rotate(" + hourDeg + "deg)";
+        document.getElementById("clockSec").style.transform = "rotate(" + secDeg + "deg)";
+        document.getElementById("clockSec").classList.toggle("is-hidden", !showSeconds);
+    }
+
+    function updateDigitalClocks(hour, minute, seconds, showSeconds) {
+        const hourString = String(hour).padStart(2, "0");
+        const hourPMString = String((hour + 12) % 24).padStart(2, "0");
+        const minuteString = String(minute).padStart(2, "0");
+        const secondsString = String(seconds).padStart(2, "0");
+        const text = showSeconds
+            ? minuteString + "<span class=\"digitalClockSeconds\">:" + secondsString + "</span>"
+            : minuteString;
+
+        document.querySelectorAll(".digitalClockValue").forEach(function(el) {
+            el.innerHTML = hourString + ":" + text;
+        });
+        document.querySelectorAll(".digitalClockPMValue").forEach(function(el) {
+            el.innerHTML = hourPMString + ":" + text;
+        });
+    }
+
+    function buildClockMessage(hour, minute, seconds, showSeconds) {
+        const labels = getClockLabels();
+        const currentHour = hour === 0 ? 12 : hour;
+        const nextHour = ((hour + 1) % 12) === 0 ? 12 : (hour + 1) % 12;
+
+        if (minute === 0) {
+            return withSecondsIfNeeded(formatClockLabel(labels.timeIsHour, { hour: currentHour }), seconds, labels, showSeconds);
+        }
+        if (minute === 30) {
+            return withSecondsIfNeeded(formatClockLabel(labels.timeIsHour30, { hour: currentHour }), seconds, labels, showSeconds);
+        }
+        if (minute === 15) {
+            return [
+                withSecondsIfNeeded(formatClockLabel(labels.timeIsQuarterPast, { hour: currentHour }), seconds, labels, showSeconds),
+                withSecondsIfNeeded(formatClockLabel(labels.timeIsHour15, { hour: currentHour }), seconds, labels, showSeconds)
+            ];
+        }
+        if (minute === 45) {
+            return [
+                withSecondsIfNeeded(formatClockLabel(labels.timeIsQuarterTo, { nextHour: nextHour }), seconds, labels, showSeconds),
+                withSecondsIfNeeded(formatClockLabel(labels.timeIsHour45, { hour: currentHour }), seconds, labels, showSeconds)
+            ];
+        }
+        if ([5, 10, 20, 25].includes(minute)) {
+            return withSecondsIfNeeded(formatClockLabel(labels.timeIsMinutesPast, { minutes: minute, hour: currentHour }), seconds, labels, showSeconds);
+        }
+        if ([35, 40, 50, 55].includes(minute)) {
+            return withSecondsIfNeeded(formatClockLabel(labels.timeIsMinutesTo, { minutes: 60 - minute, nextHour: nextHour }), seconds, labels, showSeconds);
+        }
+        return withSecondsIfNeeded(formatClockLabel(labels.timeIsHourMinutes, { hour: currentHour, minutes: minute }), seconds, labels, showSeconds);
+    }
+
+    function renderCheckOutput(content) {
+        const html = Array.isArray(content)
+            ? content.map(function(line) {
+                return "<div class=\"bg-light border border-3 rounded rounded-3 shadow p-3 mb-2\">" + line + "</div>";
+            }).join("")
+            : "<div class=\"bg-light border border-3 rounded rounded-3 shadow p-3\">" + content + "</div>";
+
+        document.querySelectorAll(".controleerOutput").forEach(function(el) {
+            el.innerHTML = html;
+        });
+    }
+
+    function generateClock() {
+        const showHours = document.getElementById("Uur").checked;
+        const showHalfHours = document.getElementById("halfUur").checked;
+        const showQuarterHours = document.getElementById("kwartier").checked;
+        const showFiveMinutes = document.getElementById("vijfmin").checked;
+        const showSingleMinutes = document.getElementById("min").checked;
+        const showSeconds = document.getElementById("sec").checked;
+
+        const excludedMinutes = new Set([0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55]);
+        const minuteSet = new Set();
+
+        if (showHours) {
+            minuteSet.add(0);
+        }
+        if (showHalfHours) {
+            minuteSet.add(30);
+        }
+        if (showQuarterHours) {
+            minuteSet.add(15);
+            minuteSet.add(45);
+        }
+        if (showFiveMinutes) {
+            [5, 10, 20, 25, 35, 40, 50, 55].forEach(function(value) {
+                minuteSet.add(value);
+            });
+        }
+        if (showSingleMinutes) {
+            for (let i = 1; i < 60; i += 1) {
+                if (!excludedMinutes.has(i)) {
+                    minuteSet.add(i);
+                }
+            }
+        }
+
+        const minuteOptions = Array.from(minuteSet);
+        const messageEl = document.getElementById("clockMessage");
+
+        if (minuteOptions.length === 0) {
+            messageEl.textContent = getClockLabels().messageSelectOption;
+            renderCheckOutput("");
+            return;
+        }
+
+        const hour = Math.floor(Math.random() * 12);
+        const minute = minuteOptions[Math.floor(Math.random() * minuteOptions.length)];
+        const seconds = showSeconds ? Math.floor(Math.random() * 60) : 0;
+
+        clockState.hour = hour;
+        clockState.minute = minute;
+        clockState.seconds = seconds;
+
+        updateClockVisuals(hour, minute, seconds, showSeconds);
+        updateDigitalClocks(hour, minute, seconds, showSeconds);
+        renderCheckOutput(buildClockMessage(hour, minute, seconds, showSeconds));
+        messageEl.textContent = "";
+    }
+
+    function togglePane(id) {
+        const pane = document.getElementById(id);
+        if (pane) {
+            pane.classList.toggle("is-hidden");
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        applyClockLanguage(currentClockLang);
+        document.getElementById("clockLangToggle").addEventListener("click", function() {
+            applyClockLanguage(currentClockLang === "NL" ? "FR" : "NL");
+            renderCheckOutput(buildClockMessage(clockState.hour, clockState.minute, clockState.seconds, document.getElementById("sec").checked));
+        });
+        document.querySelector(".clock-refresh").addEventListener("click", function(event) {
+            event.preventDefault();
+            generateClock();
+        });
+        generateClock();
+    });
+    </script>
+</body>
+</html>
