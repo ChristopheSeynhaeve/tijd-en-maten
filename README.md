@@ -10,6 +10,8 @@ Dit project bevat statische HTML-oefeningen voor tijd en maten, met kloklezen en
 - `klok-vergelijken.html`: omzetting van `klokVergelijken.twig` naar een standalone HTML-pagina.
 - `herleidingen.html`: oefenpagina voor inhoud, gewicht en lengte.
 - `herleidingen.js`: client-side logica voor willekeurige herleidingsoefeningen.
+- `herleidingen-leerkracht.html`: aparte pagina om als leerkracht willekeurige herleidingsoefeningen klaar te zetten.
+- `herleidingen-leerkracht.js`: logica voor filters, oplossing en herleidingstabel op de leerkrachtpagina.
 - `klok.css`: gedeelde styling voor alle pagina's.
 - `klok.js`: bestaand scriptbestand uit het project.
 
@@ -21,6 +23,7 @@ Open `index.html` in de browser en kies daarna:
 - `klok oefenenen`
 - `klok vergelijken`
 - `herleidingen oefenen`
+- `herleidingen klaarzetten`
 
 ## Opmerking
 

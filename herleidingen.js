@@ -4,9 +4,22 @@ const CATEGORY_CONFIG = {
   liter: {
     label: "Liter",
     typeLabel: "inhoud",
-    leftExtensions: ["decaliter", "hectoliter", "kiloliter"],
-    rightExtensions: ["centimicroliter", "decimicroliter", "microliter"],
+    leftExtensions: [
+      { label: "decaliter", symbol: "dal", factor: 10000 },
+      { label: "hectoliter", symbol: "hl", factor: 100000 },
+      { label: "kiloliter", symbol: "kl", factor: 1000000 }
+    ],
+    rightExtensions: [],
     units: [
+      { symbol: "l", factor: 1000 },
+      { symbol: "dl", factor: 100 },
+      { symbol: "cl", factor: 10 },
+      { symbol: "ml", factor: 1 }
+    ],
+    questionUnits: [
+      { symbol: "kl", factor: 1000000 },
+      { symbol: "hl", factor: 100000 },
+      { symbol: "dal", factor: 10000 },
       { symbol: "l", factor: 1000 },
       { symbol: "dl", factor: 100 },
       { symbol: "cl", factor: 10 },
@@ -16,21 +29,47 @@ const CATEGORY_CONFIG = {
   gewicht: {
     label: "Gewicht",
     typeLabel: "gewicht",
-    leftExtensions: ["decakilogram", "hectokilogram", "ton"],
-    rightExtensions: ["centimilligram", "decimilligram", "microgram"],
+    leftExtensions: [],
+    rightExtensions: [
+      { label: "decigram", symbol: "dg", factor: 100 },
+      { label: "centigram", symbol: "cg", factor: 10 },
+      { label: "milligram", symbol: "mg", factor: 1 }
+    ],
     units: [
       { symbol: "kg", factor: 1000000 },
+      { symbol: "hg", factor: 100000 },
+      { symbol: "dag", factor: 10000 },
+      { symbol: "g", factor: 1000 }
+    ],
+    questionUnits: [
+      { symbol: "kg", factor: 1000000 },
+      { symbol: "hg", factor: 100000 },
+      { symbol: "dag", factor: 10000 },
       { symbol: "g", factor: 1000 },
+      { symbol: "dg", factor: 100 },
+      { symbol: "cg", factor: 10 },
       { symbol: "mg", factor: 1 }
     ]
   },
   lengte: {
     label: "Lengte",
     typeLabel: "lengte",
-    leftExtensions: ["decakilometer", "hectokilometer", "megameter"],
-    rightExtensions: ["centimillimeter", "decimillimeter", "micrometer"],
+    leftExtensions: [
+      { label: "decameter", symbol: "dam", factor: 10000 },
+      { label: "hectometer", symbol: "hm", factor: 100000 },
+      { label: "kilometer", symbol: "km", factor: 1000000 }
+    ],
+    rightExtensions: [],
     units: [
+      { symbol: "m", factor: 1000 },
+      { symbol: "dm", factor: 100 },
+      { symbol: "cm", factor: 10 },
+      { symbol: "mm", factor: 1 }
+    ],
+    questionUnits: [
       { symbol: "km", factor: 1000000 },
+      { symbol: "hm", factor: 100000 },
+      { symbol: "dam", factor: 10000 },
       { symbol: "m", factor: 1000 },
       { symbol: "dm", factor: 100 },
       { symbol: "cm", factor: 10 },
@@ -68,6 +107,7 @@ const state = {
   answered: false,
   tableLeftCount: 0,
   tableRightCount: 0,
+  teacherQuestion: null,
   finished: false,
   summary: []
 };
@@ -98,7 +138,23 @@ const elements = {
   tableBody: document.getElementById("tableBody"),
   tableClearBtn: document.getElementById("tableClearBtn"),
   addLeftColumnBtn: document.getElementById("addLeftColumnBtn"),
-  addRightColumnBtn: document.getElementById("addRightColumnBtn")
+  addRightColumnBtn: document.getElementById("addRightColumnBtn"),
+  teacherSetupForm: document.getElementById("teacherSetupForm"),
+  teacherCategory: document.getElementById("teacherCategory"),
+  teacherLevel: document.getElementById("teacherLevel"),
+  teacherType: document.getElementById("teacherType"),
+  teacherCategoryBadge: document.getElementById("teacherCategoryBadge"),
+  teacherLevelBadge: document.getElementById("teacherLevelBadge"),
+  teacherTypeBadge: document.getElementById("teacherTypeBadge"),
+  teacherQuestionText: document.getElementById("teacherQuestionText"),
+  teacherQuestionHint: document.getElementById("teacherQuestionHint"),
+  teacherShowSolutionBtn: document.getElementById("teacherShowSolutionBtn"),
+  teacherNewQuestionBtn: document.getElementById("teacherNewQuestionBtn"),
+  teacherSolutionPanel: document.getElementById("teacherSolutionPanel"),
+  teacherSolutionText: document.getElementById("teacherSolutionText"),
+  teacherExplanationText: document.getElementById("teacherExplanationText"),
+  teacherTableHeadRow: document.getElementById("teacherTableHeadRow"),
+  teacherTableBody: document.getElementById("teacherTableBody")
 };
 
 function randomInt(min, max) {
@@ -136,19 +192,19 @@ function isCorrectAnswer(answer, expected) {
 }
 
 function getUnitIndex(config, symbol) {
-  return config.units.findIndex((unit) => unit.symbol === symbol);
+  return config.questionUnits.findIndex((unit) => unit.symbol === symbol);
 }
 
 function chooseUnits(config, minGap, allowSameUnit) {
-  let fromUnit = randomFrom(config.units);
-  let toUnit = randomFrom(config.units);
+  let fromUnit = randomFrom(config.questionUnits);
+  let toUnit = randomFrom(config.questionUnits);
 
   while (
     fromUnit.symbol === toUnit.symbol ||
     Math.abs(getUnitIndex(config, fromUnit.symbol) - getUnitIndex(config, toUnit.symbol)) < minGap
   ) {
-    fromUnit = randomFrom(config.units);
-    toUnit = randomFrom(config.units);
+    fromUnit = randomFrom(config.questionUnits);
+    toUnit = randomFrom(config.questionUnits);
   }
 
   if (allowSameUnit) {
@@ -159,7 +215,7 @@ function chooseUnits(config, minGap, allowSameUnit) {
 }
 
 function chooseLevelOneUnits(config) {
-  const sortedUnits = config.units.slice().sort((a, b) => b.factor - a.factor);
+  const sortedUnits = config.questionUnits.slice().sort((a, b) => b.factor - a.factor);
   const fromIndex = randomInt(0, sortedUnits.length - 2);
   const toIndex = randomInt(fromIndex + 1, sortedUnits.length - 1);
 
@@ -171,6 +227,14 @@ function chooseLevelOneUnits(config) {
 
 function convertValue(value, fromUnit, toUnit) {
   return (value * fromUnit.factor) / toUnit.factor;
+}
+
+function createSourcePart(amount, unit) {
+  return {
+    amount,
+    unit: unit.symbol,
+    factor: unit.factor
+  };
 }
 
 function buildSimpleQuestion(config, level) {
@@ -187,7 +251,13 @@ function buildSimpleQuestion(config, level) {
     hint: `Denk aan de volgorde van de ${config.typeLabel}-eenheden.`,
     answer,
     explanation: `${formatNumber(amount)} ${fromUnit.symbol} × ${factorText} = ${formatNumber(answer)} ${toUnit.symbol}.`,
-    tableRowCount: 1
+    tableRowCount: 1,
+    type: "simple",
+    sourceParts: [createSourcePart(amount, fromUnit)],
+    targetUnit: {
+      symbol: toUnit.symbol,
+      factor: toUnit.factor
+    }
   };
 }
 
@@ -204,7 +274,13 @@ function buildDecimalQuestion(config) {
     hint: "Een antwoord met komma of punt is allebei goed.",
     answer,
     explanation: `${formatNumber(amount)} ${fromUnit.symbol} × ${factorText} = ${formatNumber(answer)} ${toUnit.symbol}.`,
-    tableRowCount: 1
+    tableRowCount: 1,
+    type: "decimal",
+    sourceParts: [createSourcePart(amount, fromUnit)],
+    targetUnit: {
+      symbol: toUnit.symbol,
+      factor: toUnit.factor
+    }
   };
 }
 
@@ -227,12 +303,32 @@ function buildMixedUnitQuestion(config) {
       `${mainAmount} ${baseUnit.symbol} = ${formatNumber((mainAmount * baseUnit.factor) / targetUnit.factor)} ${targetUnit.symbol} ` +
       `en ${secondaryAmount} ${secondaryUnit.symbol} = ${formatNumber((secondaryAmount * secondaryUnit.factor) / targetUnit.factor)} ${targetUnit.symbol}. ` +
       `Samen is dat ${formatNumber(answer)} ${targetUnit.symbol}.`,
-    tableRowCount: 2
+    tableRowCount: 2,
+    type: "mixed",
+    sourceParts: [
+      createSourcePart(mainAmount, baseUnit),
+      createSourcePart(secondaryAmount, secondaryUnit)
+    ],
+    targetUnit: {
+      symbol: targetUnit.symbol,
+      factor: targetUnit.factor
+    }
   };
 }
 
-function createQuestion(categoryKey, level) {
+function createQuestion(categoryKey, level, preferredType) {
   const config = CATEGORY_CONFIG[categoryKey];
+  const requestedType = preferredType || "auto";
+
+  if (requestedType === "simple") {
+    return buildSimpleQuestion(config, level);
+  }
+  if (requestedType === "decimal") {
+    return buildDecimalQuestion(config);
+  }
+  if (requestedType === "mixed") {
+    return buildMixedUnitQuestion(config);
+  }
   if (level === 1) {
     return buildSimpleQuestion(config, level);
   }
@@ -259,9 +355,45 @@ function updateStatus() {
 }
 
 function buildTableColumns(config) {
-  const leftColumns = config.leftExtensions.slice(0, state.tableLeftCount).reverse();
-  const rightColumns = config.rightExtensions.slice(0, state.tableRightCount);
+  const leftColumns = config.leftExtensions
+    .slice(0, state.tableLeftCount)
+    .reverse()
+    .map((unit) => unit.label);
+  const rightColumns = config.rightExtensions
+    .slice(0, state.tableRightCount)
+    .map((unit) => unit.label);
   return [...leftColumns, ...config.units.map((unit) => unit.symbol), ...rightColumns];
+}
+
+function buildSolutionColumns(config) {
+  const leftColumns = config.leftExtensions.map((label, index) => {
+    return {
+      label,
+      factor: config.units[0].factor * (10 ** (index + 1))
+    };
+  }).reverse();
+  const baseColumns = config.units.map((unit) => ({
+    label: unit.symbol,
+    factor: unit.factor
+  }));
+  const rightColumns = config.rightExtensions.map((label, index) => {
+    return {
+      label,
+      factor: config.units[config.units.length - 1].factor / (10 ** (index + 1))
+    };
+  });
+
+  return [...leftColumns, ...baseColumns, ...rightColumns];
+}
+
+function buildRowDigits(columns, amount, factor) {
+  const referenceFactor = columns[columns.length - 1].factor;
+  const totalValue = Math.round((amount * factor) / referenceFactor);
+
+  return columns.map((column) => {
+    const step = Math.round(column.factor / referenceFactor);
+    return Math.floor(totalValue / step) % 10;
+  });
 }
 
 function updateTableButtons(config) {
@@ -321,6 +453,83 @@ function clearConversionTable() {
   elements.tableBody.querySelectorAll("input").forEach((input) => {
     input.value = "";
   });
+}
+
+function renderTeacherSolutionTable(question, categoryKey) {
+  const config = CATEGORY_CONFIG[categoryKey];
+  const columns = buildSolutionColumns(config);
+  const resultRowDigits = buildRowDigits(columns, question.answer, question.targetUnit.factor);
+
+  elements.teacherTableHeadRow.innerHTML = "<th>Rij</th>" + columns
+    .map((column) => `<th scope="col">${column.label}</th>`)
+    .join("");
+
+  const sourceRows = question.sourceParts.map((part, index) => {
+    const digits = buildRowDigits(columns, part.amount, part.factor);
+    const title = question.sourceParts.length > 1 ? `Deel ${index + 1}` : "Opgave";
+    return `<tr>
+      <th scope="row">${title}</th>
+      ${digits.map((digit) => `<td>${digit === 0 ? "" : digit}</td>`).join("")}
+    </tr>`;
+  });
+
+  const resultRow = `<tr class="teacher-solution-result-row">
+    <th scope="row">Uitkomst</th>
+    ${resultRowDigits.map((digit) => `<td>${digit === 0 ? "" : digit}</td>`).join("")}
+  </tr>`;
+
+  elements.teacherTableBody.innerHTML = [...sourceRows, resultRow].join("");
+}
+
+function formatTeacherType(type) {
+  if (type === "simple") {
+    return "Eenvoudige omzetting";
+  }
+  if (type === "decimal") {
+    return "Kommagetal";
+  }
+  if (type === "mixed") {
+    return "Gemengde eenheden";
+  }
+  return "Automatisch";
+}
+
+function renderTeacherQuestion(question, categoryKey, level) {
+  const category = CATEGORY_CONFIG[categoryKey];
+  state.teacherQuestion = question;
+  elements.teacherCategoryBadge.textContent = category.label;
+  elements.teacherLevelBadge.textContent = `Niveau ${level}`;
+  elements.teacherTypeBadge.textContent = formatTeacherType(question.type);
+  elements.teacherQuestionText.textContent = question.prompt;
+  elements.teacherQuestionHint.textContent = "De leerlingen lossen de oefening op papier op. Gebruik daarna de oplossing en tabel.";
+  elements.teacherSolutionPanel.classList.add("is-hidden");
+  elements.teacherSolutionText.textContent = "";
+  elements.teacherExplanationText.textContent = "";
+  elements.teacherTableHeadRow.innerHTML = "";
+  elements.teacherTableBody.innerHTML = "";
+  elements.teacherShowSolutionBtn.disabled = false;
+  elements.teacherNewQuestionBtn.disabled = false;
+}
+
+function showTeacherSolution() {
+  if (!state.teacherQuestion) {
+    return;
+  }
+
+  const categoryKey = elements.teacherCategory.value;
+  elements.teacherSolutionText.textContent =
+    `Juiste antwoord: ${formatNumber(state.teacherQuestion.answer)} ${state.teacherQuestion.targetUnit.symbol}`;
+  elements.teacherExplanationText.textContent = state.teacherQuestion.explanation;
+  renderTeacherSolutionTable(state.teacherQuestion, categoryKey);
+  elements.teacherSolutionPanel.classList.remove("is-hidden");
+}
+
+function generateTeacherQuestion() {
+  const categoryKey = elements.teacherCategory.value;
+  const level = Number(elements.teacherLevel.value);
+  const selectedType = elements.teacherType.value;
+  const question = createQuestion(categoryKey, level, selectedType);
+  renderTeacherQuestion(question, categoryKey, level);
 }
 
 function showScreen(screenName) {
@@ -484,3 +693,18 @@ elements.restartBtn.addEventListener("click", () => {
   elements.setupForm.reset();
   showScreen("start");
 });
+
+if (elements.teacherSetupForm && elements.teacherShowSolutionBtn && elements.teacherNewQuestionBtn) {
+  elements.teacherSetupForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    generateTeacherQuestion();
+  });
+
+  elements.teacherShowSolutionBtn.addEventListener("click", () => {
+    showTeacherSolution();
+  });
+
+  elements.teacherNewQuestionBtn.addEventListener("click", () => {
+    generateTeacherQuestion();
+  });
+}

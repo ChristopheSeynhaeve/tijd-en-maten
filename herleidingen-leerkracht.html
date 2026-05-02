@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="nl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Leerkrachtmodule om herleidingen met filters en oplossingen te genereren.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="klok.css" rel="stylesheet">
+    <title>Herleidingen voor de leerkracht</title>
+</head>
+<body class="conversion-page">
+    <main class="conversion-shell">
+        <section class="conversion-panel">
+            <div class="conversion-topbar">
+                <div>
+                    <div class="conversion-kicker">
+                        <i class="bi bi-journal-check"></i>
+                        <span>Leerkrachtmodule</span>
+                    </div>
+                    <h1 class="conversion-title">Herleidingen klaarzetten</h1>
+                    <p class="conversion-subtitle">Kies filters, genereer een willekeurige oefening en toon daarna de oplossing met een duidelijke herleidingstabel.</p>
+                </div>
+                <a class="btn btn-outline-dark clock-btn" href="index.html">
+                    <i class="bi bi-house-door me-2"></i>Startpagina
+                </a>
+            </div>
+
+            <section class="conversion-card teacher-card">
+                <div class="teacher-grid">
+                    <aside class="teacher-filters">
+                        <form id="teacherSetupForm" class="teacher-filter-form">
+                            <div>
+                                <label class="conversion-label" for="teacherCategory">Categorie</label>
+                                <select id="teacherCategory" class="form-select">
+                                    <option value="liter">Liter</option>
+                                    <option value="gewicht">Gewicht</option>
+                                    <option value="lengte">Lengte</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="conversion-label" for="teacherLevel">Niveau</label>
+                                <select id="teacherLevel" class="form-select">
+                                    <option value="1">Niveau 1</option>
+                                    <option value="2">Niveau 2</option>
+                                    <option value="3">Niveau 3</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="conversion-label" for="teacherType">Type oefening</label>
+                                <select id="teacherType" class="form-select">
+                                    <option value="auto">Automatisch</option>
+                                    <option value="simple">Eenvoudige omzetting</option>
+                                    <option value="decimal">Kommagetal</option>
+                                    <option value="mixed">Gemengde eenheden</option>
+                                </select>
+                            </div>
+
+                            <button class="btn btn-success clock-btn conversion-start-btn" type="submit">Genereer oefening</button>
+                        </form>
+                    </aside>
+
+                    <div class="teacher-stage">
+                        <div class="teacher-meta">
+                            <div class="conversion-badge" id="teacherCategoryBadge">Liter</div>
+                            <div class="conversion-badge" id="teacherLevelBadge">Niveau 1</div>
+                            <div class="conversion-badge" id="teacherTypeBadge">Automatisch</div>
+                        </div>
+
+                        <div class="conversion-question-block teacher-question-block">
+                            <p class="conversion-question teacher-question" id="teacherQuestionText">Kies filters en genereer een oefening.</p>
+                            <p class="conversion-hint" id="teacherQuestionHint">De leerlingen lossen deze oefening op papier op.</p>
+                        </div>
+
+                        <div class="teacher-actions">
+                            <button id="teacherShowSolutionBtn" class="btn btn-warning clock-btn" type="button" disabled>Toon oplossing</button>
+                            <button id="teacherNewQuestionBtn" class="btn btn-success clock-btn" type="button" disabled>Nieuwe oefening</button>
+                        </div>
+
+                        <div id="teacherSolutionPanel" class="teacher-solution is-hidden">
+                            <div class="teacher-solution-copy">
+                                <h3>Oplossing</h3>
+                                <p id="teacherSolutionText" class="teacher-solution-answer"></p>
+                                <p id="teacherExplanationText" class="teacher-solution-explanation"></p>
+                            </div>
+
+                            <div class="teacher-table-wrap">
+                                <table class="conversion-table teacher-solution-table">
+                                    <thead>
+                                        <tr id="teacherTableHeadRow"></tr>
+                                    </thead>
+                                    <tbody id="teacherTableBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </section>
+    </main>
+
+    <script src="herleidingen-leerkracht.js"></script>
+</body>
+</html>
