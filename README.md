@@ -1,13 +1,15 @@
-# Kloklezen
+# Tijd en Maten
 
-Dit project bevat een statische HTML-versie van de kloklezen-pagina's.
+Dit project bevat statische HTML-oefeningen voor tijd en maten, met kloklezen en herleidingen.
 
 ## Bestanden
 
-- `index.html`: startpagina met 2 kaarten naar de onderdelen.
+- `index.html`: startpagina met kaarten naar de verschillende onderdelen.
 - `klok.html`: omzetting van `klok.twig` naar een standalone HTML-pagina.
 - `klok-oefenen.html`: omzetting van `klokOefenen.twig` naar een standalone HTML-oefenpagina.
 - `klok-vergelijken.html`: omzetting van `klokVergelijken.twig` naar een standalone HTML-pagina.
+- `herleidingen.html`: oefenpagina voor inhoud, gewicht en lengte.
+- `herleidingen.js`: client-side logica voor willekeurige herleidingsoefeningen.
 - `klok.css`: gedeelde styling voor alle pagina's.
 - `klok.js`: bestaand scriptbestand uit het project.
 
@@ -18,6 +20,7 @@ Open `index.html` in de browser en kies daarna:
 - `kloklezen`
 - `klok oefenenen`
 - `klok vergelijken`
+- `herleidingen oefenen`
 
 ## Opmerking
 
@@ -25,14 +28,14 @@ De originele Twig-bestanden gebruikten Craft CMS/Twig-functionaliteit. In de HTM
 
 ## Publiceren op GitHub
 
-1. Maak op GitHub een nieuwe repository aan, bijvoorbeeld `kloklezen`.
+1. Maak op GitHub een nieuwe repository aan, bijvoorbeeld `tijd-en-maten`.
 2. Laat de repository leeg: geen extra README, `.gitignore` of license aanvinken.
 3. Koppel daarna lokaal je map aan GitHub:
 
 ```bash
 git add .
 git commit -m "Initial static site"
-git remote add origin https://github.com/JOUW_GEBRUIKERSNAAM/kloklezen.git
+git remote add origin https://github.com/JOUW_GEBRUIKERSNAAM/tijd-en-maten.git
 git push -u origin master
 ```
 
@@ -46,7 +49,7 @@ git push -u origin master
 5. Je site komt daarna normaal online op:
 
 ```text
-https://JOUW_GEBRUIKERSNAAM.github.io/kloklezen/
+https://JOUW_GEBRUIKERSNAAM.github.io/tijd-en-maten/
 ```
 
 De startpagina van de site is `index.html`.

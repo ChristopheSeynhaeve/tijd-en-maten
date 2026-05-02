@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="nl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Kindvriendelijke oefeningen voor herleidingen van inhoud, gewicht en lengte.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="klok.css" rel="stylesheet">
+    <title>Herleidingen oefenen</title>
+</head>
+<body class="conversion-page">
+    <main class="conversion-shell">
+        <section class="conversion-panel">
+            <div class="conversion-topbar">
+                <div>
+                    <div class="conversion-kicker">
+                        <i class="bi bi-stars"></i>
+                        <span>Oefenmodule</span>
+                    </div>
+                    <h1 class="conversion-title">Herleidingen oefenen</h1>
+                    <p class="conversion-subtitle">Kies een categorie en een niveau. Daarna krijg je 10 vragen om meteen te oefenen.</p>
+                </div>
+                <a class="btn btn-outline-dark clock-btn" href="index.html">
+                    <i class="bi bi-house-door me-2"></i>Startpagina
+                </a>
+            </div>
+
+            <section id="startScreen" class="conversion-card">
+                <div class="conversion-card-header">
+                    <h2>Kies je oefening</h2>
+                    <p>Alle vragen zijn in het Nederlands en je mag antwoorden met een komma of een punt.</p>
+                </div>
+
+                <form id="setupForm" class="conversion-setup">
+                    <div>
+                        <div class="conversion-label">Categorie</div>
+                        <div class="conversion-choice-grid" id="categoryChoices">
+                            <label class="conversion-choice">
+                                <input type="radio" name="category" value="liter" checked>
+                                <span>Liter</span>
+                            </label>
+                            <label class="conversion-choice">
+                                <input type="radio" name="category" value="gewicht">
+                                <span>Gewicht</span>
+                            </label>
+                            <label class="conversion-choice">
+                                <input type="radio" name="category" value="lengte">
+                                <span>Lengte</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="conversion-label">Niveau</div>
+                        <div class="conversion-choice-grid conversion-choice-grid--levels">
+                            <label class="conversion-choice">
+                                <input type="radio" name="level" value="1" checked>
+                                <span>Niveau 1</span>
+                                <small>Makkelijk</small>
+                            </label>
+                            <label class="conversion-choice">
+                                <input type="radio" name="level" value="2">
+                                <span>Niveau 2</span>
+                                <small>Gemiddeld</small>
+                            </label>
+                            <label class="conversion-choice">
+                                <input type="radio" name="level" value="3">
+                                <span>Niveau 3</span>
+                                <small>Moeilijker</small>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-success clock-btn conversion-start-btn" type="submit">Start oefenen</button>
+                </form>
+            </section>
+
+            <section id="quizScreen" class="conversion-card is-hidden">
+                <div class="conversion-statusbar">
+                    <div class="conversion-badge" id="categoryBadge">Liter</div>
+                    <div class="conversion-badge" id="levelBadge">Niveau 1</div>
+                    <div class="conversion-score" id="scoreText">0 van de 10 juist</div>
+                </div>
+
+                <div class="conversion-progress-wrap">
+                    <div class="conversion-progress-label" id="progressText">Vraag 1 van 10</div>
+                    <div class="conversion-progress-bar">
+                        <div class="conversion-progress-fill" id="progressFill"></div>
+                    </div>
+                </div>
+
+                <div class="conversion-question-block">
+                    <p class="conversion-question" id="questionText"></p>
+                    <p class="conversion-hint" id="questionHint"></p>
+                </div>
+
+                <section class="conversion-helper">
+                    <button id="tableToggleBtn" class="btn btn-outline-dark clock-btn conversion-helper-toggle" type="button" aria-expanded="false">
+                        Toon herleidingstabel
+                    </button>
+
+                    <div id="tablePanel" class="conversion-table-panel is-hidden">
+                        <div class="conversion-table-header">
+                            <h3>Herleidingstabel</h3>
+                            <p>Vul zelf getallen in om de sprongen tussen de eenheden te oefenen.</p>
+                        </div>
+                        <div class="conversion-table-builder">
+                            <button id="addLeftColumnBtn" class="btn btn-outline-dark clock-btn conversion-table-add" type="button" aria-label="Voeg links een kolom toe">
+                                +
+                            </button>
+                            <div class="conversion-table-wrap">
+                                <table class="conversion-table">
+                                    <thead>
+                                        <tr id="tableHeadRow"></tr>
+                                    </thead>
+                                    <tbody id="tableBody"></tbody>
+                                </table>
+                            </div>
+                            <button id="addRightColumnBtn" class="btn btn-outline-dark clock-btn conversion-table-add" type="button" aria-label="Voeg rechts een kolom toe">
+                                +
+                            </button>
+                        </div>
+                        <button id="tableClearBtn" class="btn btn-outline-secondary clock-btn conversion-table-clear" type="button">
+                            Maak tabel leeg
+                        </button>
+                    </div>
+                </section>
+
+                <form id="answerForm" class="conversion-answer-form">
+                    <label class="conversion-label" for="answerInput">Jouw antwoord</label>
+                    <div class="conversion-answer-row">
+                        <input id="answerInput" class="form-control conversion-input" type="text" inputmode="decimal" autocomplete="off" placeholder="Typ je antwoord">
+                        <button class="btn btn-warning clock-btn conversion-check-btn" type="submit">Controleer</button>
+                    </div>
+                </form>
+
+                <div id="feedbackBox" class="conversion-feedback" aria-live="polite"></div>
+
+                <div class="conversion-actions">
+                    <button id="nextQuestionBtn" class="btn btn-success clock-btn is-hidden" type="button">Volgende vraag</button>
+                </div>
+            </section>
+
+            <section id="endScreen" class="conversion-card conversion-end is-hidden">
+                <div class="conversion-celebration">
+                    <div class="conversion-trophy">
+                        <i class="bi bi-trophy-fill"></i>
+                    </div>
+                    <h2>Klaar!</h2>
+                    <p id="resultText" class="conversion-result"></p>
+                    <p id="resultMessage" class="conversion-result-copy"></p>
+                </div>
+
+                <div id="summaryList" class="conversion-summary-list"></div>
+
+                <button id="restartBtn" class="btn btn-success clock-btn conversion-start-btn" type="button">Opnieuw oefenen</button>
+            </section>
+        </section>
+    </main>
+
+    <script src="herleidingen.js"></script>
+</body>
+</html>

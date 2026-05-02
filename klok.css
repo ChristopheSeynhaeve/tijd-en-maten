@@ -495,6 +495,9 @@ body.clock-home{
 .home-card--warm::before{
     background: rgba(249, 115, 22, 0.16);
 }
+.home-card--play::before{
+    background: rgba(34, 197, 94, 0.18);
+}
 .home-card-label{
     display: inline-flex;
     padding: 0.45rem 0.75rem;
@@ -629,6 +632,358 @@ body.clock-practice{
     border: 1px solid rgba(15, 23, 42, 0.08);
 }
 
+body.conversion-page{
+    font-family: "Space Grotesk", sans-serif;
+    color: var(--ink);
+    background:
+        radial-gradient(900px 420px at 12% -8%, rgba(253, 224, 71, 0.38) 0%, rgba(253, 224, 71, 0) 60%),
+        radial-gradient(800px 460px at 90% 4%, rgba(56, 189, 248, 0.28) 0%, rgba(56, 189, 248, 0) 60%),
+        linear-gradient(180deg, #fffdf5 0%, #f0f9ff 55%, #eefcf1 100%);
+    min-height: 100vh;
+}
+.conversion-shell{
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem 3rem;
+}
+.conversion-panel{
+    display: grid;
+    gap: 1.5rem;
+}
+.conversion-topbar{
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+.conversion-kicker{
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.45rem 0.85rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.78);
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+    font-size: 0.95rem;
+}
+.conversion-title{
+    margin: 1rem 0 0.65rem;
+    font-size: clamp(2.2rem, 6vw, 4.2rem);
+    font-weight: 700;
+    line-height: 0.95;
+}
+.conversion-subtitle{
+    max-width: 58ch;
+    color: var(--ink-muted);
+    font-size: 1.05rem;
+}
+.conversion-card{
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 28px;
+    padding: 1.5rem;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    box-shadow: 0 24px 50px rgba(15, 23, 42, 0.12);
+}
+.conversion-card-header h2,
+.conversion-end h2{
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+}
+.conversion-card-header p{
+    color: var(--ink-muted);
+    margin-bottom: 0;
+}
+.conversion-setup{
+    display: grid;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+.conversion-label{
+    display: inline-block;
+    margin-bottom: 0.7rem;
+    font-weight: 700;
+}
+.conversion-choice-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 1rem;
+}
+.conversion-choice{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-height: 112px;
+    padding: 1rem 1rem 1rem 3.4rem;
+    border-radius: 24px;
+    cursor: pointer;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.96));
+    border: 2px solid rgba(148, 163, 184, 0.24);
+    transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+.conversion-choice:hover,
+.conversion-choice:focus-within{
+    transform: translateY(-3px);
+    border-color: rgba(14, 165, 233, 0.4);
+    box-shadow: 0 18px 32px rgba(14, 165, 233, 0.14);
+}
+.conversion-choice input{
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    width: 1.3rem;
+    height: 1.3rem;
+}
+.conversion-choice span{
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+.conversion-choice small{
+    color: var(--ink-muted);
+    font-size: 0.95rem;
+}
+.conversion-choice input:checked + span{
+    color: #0369a1;
+}
+.conversion-choice-grid--levels .conversion-choice{
+    min-height: 124px;
+}
+.conversion-start-btn{
+    justify-self: start;
+    padding: 0.85rem 1.5rem;
+    font-size: 1.05rem;
+}
+.conversion-statusbar{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+    justify-content: space-between;
+}
+.conversion-badge,
+.conversion-score{
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0.55rem 0.9rem;
+    border-radius: 999px;
+    background: rgba(241, 245, 249, 0.92);
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    font-weight: 700;
+}
+.conversion-progress-wrap{
+    margin-top: 1.25rem;
+}
+.conversion-progress-label{
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+.conversion-progress-bar{
+    width: 100%;
+    height: 16px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(226, 232, 240, 0.95);
+}
+.conversion-progress-fill{
+    width: 10%;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #38bdf8, #22c55e);
+    transition: width 180ms ease;
+}
+.conversion-question-block{
+    margin: 1.75rem 0 1rem;
+    padding: 1.5rem;
+    border-radius: 24px;
+    background:
+        radial-gradient(circle at top right, rgba(253, 224, 71, 0.3), rgba(253, 224, 71, 0) 42%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(248, 250, 252, 0.96));
+    border: 1px solid rgba(15, 23, 42, 0.08);
+}
+.conversion-question{
+    margin-bottom: 0.4rem;
+    font-size: clamp(1.6rem, 4vw, 2.35rem);
+    font-weight: 700;
+    line-height: 1.15;
+}
+.conversion-hint{
+    margin-bottom: 0;
+    color: var(--ink-muted);
+}
+.conversion-helper{
+    display: grid;
+    gap: 0.9rem;
+    margin-bottom: 1.25rem;
+    min-width: 0;
+}
+.conversion-helper-toggle{
+    justify-self: start;
+}
+.conversion-table-panel{
+    padding: 1rem;
+    border-radius: 22px;
+    background: rgba(248, 250, 252, 0.88);
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    min-width: 0;
+    overflow-x: hidden;
+}
+.conversion-table-header h3{
+    margin: 0 0 0.3rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+.conversion-table-header p{
+    margin: 0 0 0.85rem;
+    color: var(--ink-muted);
+}
+.conversion-table-wrap{
+    flex: 1;
+    width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+.conversion-table-builder{
+    display: flex;
+    align-items: stretch;
+    gap: 0.75rem;
+    width: 100%;
+    min-width: 0;
+}
+.conversion-table{
+    width: max-content;
+    min-width: 100%;
+    border-collapse: separate;
+    border-spacing: 0.5rem;
+}
+.conversion-table-add{
+    width: 52px;
+    min-width: 52px;
+    align-self: center;
+    border-radius: 18px;
+    font-size: 1.6rem;
+    line-height: 1;
+}
+.conversion-table-add:disabled{
+    opacity: 0.45;
+}
+.conversion-table th{
+    min-width: 70px;
+    padding: 0.7rem 0.4rem;
+    border-radius: 16px;
+    text-align: center;
+    background: rgba(14, 165, 233, 0.12);
+    color: #075985;
+    font-weight: 700;
+}
+.conversion-table td{
+    padding: 0;
+}
+.conversion-table-input{
+    min-width: 70px;
+    min-height: 52px;
+    text-align: center;
+    border-radius: 16px;
+    border: 2px solid rgba(148, 163, 184, 0.22);
+}
+.conversion-table-clear{
+    margin-top: 0.75rem;
+}
+.conversion-answer-form{
+    display: grid;
+    gap: 0.75rem;
+}
+.conversion-answer-row{
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+.conversion-input{
+    flex: 1 1 240px;
+    min-height: 56px;
+    border-radius: 18px;
+    font-size: 1.1rem;
+    border: 2px solid rgba(148, 163, 184, 0.22);
+}
+.conversion-check-btn{
+    min-height: 56px;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+}
+.conversion-feedback{
+    min-height: 4.5rem;
+    margin-top: 1rem;
+}
+.conversion-feedback-box{
+    padding: 1rem 1.1rem;
+    border-radius: 20px;
+    font-weight: 700;
+    line-height: 1.45;
+}
+.conversion-feedback-box.is-correct{
+    background: rgba(34, 197, 94, 0.16);
+    color: #166534;
+}
+.conversion-feedback-box.is-wrong{
+    background: rgba(251, 191, 36, 0.2);
+    color: #92400e;
+}
+.conversion-actions{
+    margin-top: 1rem;
+}
+.conversion-end{
+    text-align: center;
+}
+.conversion-celebration{
+    max-width: 620px;
+    margin: 0 auto;
+}
+.conversion-trophy{
+    width: 78px;
+    height: 78px;
+    margin: 0 auto 1rem;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: linear-gradient(180deg, #facc15, #f59e0b);
+    color: #fff;
+    font-size: 2rem;
+    box-shadow: 0 20px 40px rgba(245, 158, 11, 0.28);
+}
+.conversion-result{
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+.conversion-result-copy{
+    color: var(--ink-muted);
+}
+.conversion-summary-list{
+    display: grid;
+    gap: 0.85rem;
+    margin: 1.5rem auto 0;
+    max-width: 760px;
+    text-align: left;
+}
+.conversion-summary-item{
+    display: grid;
+    gap: 0.2rem;
+    padding: 1rem;
+    border-radius: 20px;
+    background: rgba(248, 250, 252, 0.92);
+    border: 1px solid rgba(15, 23, 42, 0.08);
+}
+.conversion-summary-item.is-correct{
+    border-color: rgba(34, 197, 94, 0.26);
+}
+.conversion-summary-item.is-wrong{
+    border-color: rgba(245, 158, 11, 0.32);
+}
+
 @media (max-width: 991.98px){
     .clock-side{
         display: none;
@@ -648,6 +1003,9 @@ body.clock-practice{
     .practice-clock-shell{
         width: min(88vw, 420px);
     }
+    .conversion-topbar{
+        align-items: stretch;
+    }
 }
 @media (max-width: 575.98px){
     .clock-shell.clock-shell-compare{
@@ -660,6 +1018,50 @@ body.clock-practice{
     }
     .home-card{
         min-height: 220px;
+    }
+    .conversion-shell{
+        padding-left: 0.85rem;
+        padding-right: 0.85rem;
+    }
+    .conversion-card{
+        padding: 1.15rem;
+    }
+    .conversion-choice{
+        min-height: 98px;
+        padding-left: 3.1rem;
+    }
+    .conversion-answer-row{
+        flex-direction: column;
+    }
+    .conversion-input{
+        flex: none;
+        width: 100%;
+    }
+    .conversion-table-builder{
+        flex-direction: column;
+    }
+    .conversion-table-add{
+        width: 100%;
+    }
+    .conversion-table{
+        border-spacing: 0.35rem;
+    }
+    .conversion-table th{
+        min-width: 48px;
+        padding: 0.55rem 0.25rem;
+        font-size: 0.78rem;
+    }
+    .conversion-table-input{
+        min-width: 48px;
+        width: 48px;
+        min-height: 46px;
+        padding: 0.35rem 0.2rem;
+        font-size: 1rem;
+    }
+    .conversion-check-btn,
+    .conversion-start-btn,
+    .conversion-actions .clock-btn{
+        width: 100%;
     }
 }
 @media (min-width: 992px){
